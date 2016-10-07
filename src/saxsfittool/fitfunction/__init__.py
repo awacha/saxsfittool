@@ -1,0 +1,1 @@
+from .fitfunction import FitFunction

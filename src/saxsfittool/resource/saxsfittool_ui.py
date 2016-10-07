@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'src/saxsfittool/resource/saxsfittool.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -88,15 +88,16 @@ class Ui_Form(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.comboBox = QtWidgets.QComboBox(self.fitcontrol_box)
-        self.comboBox.setObjectName("comboBox")
-        self.gridLayout_2.addWidget(self.comboBox, 0, 1, 1, 1)
+        self.fitFunctionComboBox = QtWidgets.QComboBox(self.fitcontrol_box)
+        self.fitFunctionComboBox.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToContents)
+        self.fitFunctionComboBox.setObjectName("fitFunctionComboBox")
+        self.gridLayout_2.addWidget(self.fitFunctionComboBox, 0, 1, 1, 1)
         self.label_4 = QtWidgets.QLabel(self.fitcontrol_box)
         self.label_4.setObjectName("label_4")
         self.gridLayout_2.addWidget(self.label_4, 0, 0, 1, 1)
-        self.ExecutePushButton = QtWidgets.QPushButton(self.fitcontrol_box)
-        self.ExecutePushButton.setObjectName("ExecutePushButton")
-        self.gridLayout_2.addWidget(self.ExecutePushButton, 1, 1, 1, 1)
+        self.executePushButton = QtWidgets.QPushButton(self.fitcontrol_box)
+        self.executePushButton.setObjectName("executePushButton")
+        self.gridLayout_2.addWidget(self.executePushButton, 1, 1, 1, 1)
         self.rePlotPushButton = QtWidgets.QPushButton(self.fitcontrol_box)
         self.rePlotPushButton.setObjectName("rePlotPushButton")
         self.gridLayout_2.addWidget(self.rePlotPushButton, 1, 0, 1, 1)
@@ -131,7 +132,9 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.treeView.sizePolicy().hasHeightForWidth())
         self.treeView.setSizePolicy(sizePolicy)
+        self.treeView.setRootIsDecorated(False)
         self.treeView.setUniformRowHeights(True)
+        self.treeView.setItemsExpandable(False)
         self.treeView.setObjectName("treeView")
         self.horizontalLayout_4.addWidget(self.treeView)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -170,7 +173,7 @@ class Ui_Form(object):
 "zoom"))
         self.fitcontrol_box.setTitle(_translate("Form", "Fit control"))
         self.label_4.setText(_translate("Form", "Model function:"))
-        self.ExecutePushButton.setText(_translate("Form", "Execute"))
+        self.executePushButton.setText(_translate("Form", "Execute"))
         self.rePlotPushButton.setText(_translate("Form", "Replot"))
         self.parameters_box.setTitle(_translate("Form", "Fit parameters"))
 

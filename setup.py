@@ -26,10 +26,10 @@ incdirs.extend(npy_incdirs)
 # Extension modules written in Cython
 
 pyxfiles = []
-for dir_, subdirs, files in os.walk('sastool'):
+for dir_, subdirs, files in os.walk('src/saxsfittool'):
     pyxfiles.extend([os.path.join(dir_, f) for f in files if f.endswith('.pyx')])
 
-ext_modules = cythonize([Extension(p.replace('/', '.')[:-4], [p], include_dirs=incdirs) for p in pyxfiles])
+ext_modules = cythonize([Extension(p.replace('/', '.')[:-4].split('.',1)[1], [p], include_dirs=incdirs) for p in pyxfiles], force=True)
 
 def compile_uis(packageroot):
     if compileUi is None:
@@ -50,7 +50,7 @@ setup(name='saxsfittool', author='Andras Wacha',
       author_email='awacha@gmail.com', url='http://github.com/awacha/saxsfittool',
       description='GUI utility for model fitting to SAXS curves',
       package_dir={'': 'src'},
-      packages=['saxsfittool', 'saxsfittool.resource'],
+      packages=['saxsfittool', 'saxsfittool.resource', 'saxsfittool.fitfunction'],
       package_data={'': ['*.ui']},
       ext_modules=cythonize(ext_modules),
       install_requires=['numpy>=1.0.0', 'scipy>=0.7.0', 'matplotlib',
