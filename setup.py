@@ -3,7 +3,10 @@
 import os, pickle
 from distutils.sysconfig import get_python_lib, get_python_inc
 
-from Cython.Build import cythonize
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    cythonize = lambda x:x
 from setuptools import setup, find_packages
 import pkg_resources
 import setuptools_scm
@@ -22,7 +25,7 @@ pyxfiles = []
 for dir_, subdirs, files in os.walk('sastool'):
     pyxfiles.extend([os.path.join(dir_, f) for f in files if f.endswith('.pyx')])
 
-ext_modules = [Extension(p.replace('/', '.')[:-4], [p], include_dirs=incdirs) for p in pyxfiles]
+ext_modules = cythonize([Extension(p.replace('/', '.')[:-4], [p], include_dirs=incdirs) for p in pyxfiles])
 
 def compile_uis(packageroot):
     for dirpath, dirnames, filenames in os.walk(packageroot):

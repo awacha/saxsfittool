@@ -2,3 +2,4 @@
 /dist
 /src/saxsfittool.egg-info
 /.idea
+__pycache__

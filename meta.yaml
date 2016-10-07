@@ -25,6 +25,7 @@ requirements:
     - scipy
     - matplotlib
     - pyqt >=5
+    - cython
 
 about:
   home: https://github.com/awacha/saxsfittool
