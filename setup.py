@@ -11,7 +11,11 @@ from setuptools import setup, find_packages
 import pkg_resources
 import setuptools_scm
 from setuptools.extension import Extension
-from PyQt5.uic import compileUi
+try:
+    from PyQt5.uic import compileUi
+except ImportError:
+    def compileUi(*args):
+        pass
 # Cython autobuilding needs the numpy headers. On Windows hosts, this trick is
 # needed. On Linux, the headers are already in standard places.
 incdirs = list(set([get_python_lib(0, 0), get_python_lib(0, 1), get_python_lib(1, 0),
@@ -28,6 +32,8 @@ for dir_, subdirs, files in os.walk('sastool'):
 ext_modules = cythonize([Extension(p.replace('/', '.')[:-4], [p], include_dirs=incdirs) for p in pyxfiles])
 
 def compile_uis(packageroot):
+    if compileUi is None:
+        return
     for dirpath, dirnames, filenames in os.walk(packageroot):
         for fn in [fn_ for fn_ in filenames if fn_.endswith('.ui')]:
             fname = os.path.join(dirpath, fn)
