@@ -1,0 +1,43 @@
+package:
+  name: saxsfittool
+  version: {{ GIT_DESCRIBE_TAG }}
+
+source:
+  git_url: ./
+
+build:
+  number: {{ GIT_DESCRIBE_NUMBER }}
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - pyqt >=5
+    - setuptools_scm
+    - matplotlib
+    - numpy
+    - scipy
+    - cython
+
+  run:
+    - python
+    - numpy
+    - scipy
+    - matplotlib
+    - pyqt >=5
+
+about:
+  home: https://github.com/awacha/saxsfittool
+  license: 3-clause BSD license
+  dev_url: https://github.com/awacha/saxsfittool.git
+  license_family: BSD
+  license_file: LICENSE
+  summary: Fitting models to SAXS curves
+  description: A GUI utility for nonlinear least-squares fitting of various models to small-angle X-ray scattering curves or other experimental results
+
+#app:
+#  entry: tem_circlefind   [linux]
+#  entry: tem_circlefind   [win]
+#  summary: Circle finding tool for transmission electron micrographs
+#  type: desk
+#  icon: tem_circlefind.png

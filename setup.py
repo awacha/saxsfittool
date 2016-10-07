@@ -1,12 +1,14 @@
 #!/usb/bin/env python
 
-import os
+import os, pickle
 from distutils.sysconfig import get_python_lib, get_python_inc
 
 from Cython.Build import cythonize
 from setuptools import setup, find_packages
+import pkg_resources
+import setuptools_scm
 from setuptools.extension import Extension
-
+from PyQt5.uic import compileUi
 # Cython autobuilding needs the numpy headers. On Windows hosts, this trick is
 # needed. On Linux, the headers are already in standard places.
 incdirs = list(set([get_python_lib(0, 0), get_python_lib(0, 1), get_python_lib(1, 0),
@@ -22,15 +24,30 @@ for dir_, subdirs, files in os.walk('sastool'):
 
 ext_modules = [Extension(p.replace('/', '.')[:-4], [p], include_dirs=incdirs) for p in pyxfiles]
 
+def compile_uis(packageroot):
+    for dirpath, dirnames, filenames in os.walk(packageroot):
+        for fn in [fn_ for fn_ in filenames if fn_.endswith('.ui')]:
+            fname = os.path.join(dirpath, fn)
+            pyfilename = os.path.splitext(fname)[0] + '_ui.py'
+            with open(pyfilename, 'wt', encoding='utf-8') as pyfile:
+                compileUi(fname, pyfile)
+            print('Compiled UI file: {} -> {}.'.format(fname, pyfilename))
+
+
+compile_uis('src')
+
+
 setup(name='saxsfittool', author='Andras Wacha',
       author_email='awacha@gmail.com', url='http://github.com/awacha/saxsfittool',
       description='GUI utility for model fitting to SAXS curves',
-      packages=find_packages(),
+      package_dir={'': 'src'},
+      packages=['saxsfittool', 'saxsfittool.resource'],
+      package_data={'': ['*.ui']},
       ext_modules=cythonize(ext_modules),
-      install_requires=['numpy>=1.0.0', 'scipy>=0.7.0', 'matplotlib', 'PyQt',
-                        'Cython>=0.15'],
+      install_requires=['numpy>=1.0.0', 'scipy>=0.7.0', 'matplotlib',
+                        'Cython>=0.15', 'setuptools_scm'],
       use_scm_version=True,
-      setup_requires=['Cython>=0.15', 'setuptools_scm'],
+      setup_requires=['Cython>=0.15'],
       keywords="saxs least squares model fitting",
       license="BSD",
       zip_safe=False,

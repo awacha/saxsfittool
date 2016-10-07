@@ -7,11 +7,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.axes import Axes
 
-MainWindow_Ui, ParentType= uic.loadUiType(resource_filename('saxsfittool', os.path.join('resource','saxsfittool.ui')))
-
-assert ParentType is QtWidgets.QWidget
-
-from .saxsfittool_ui import Ui_Form
+from .resource.saxsfittool_ui import Ui_Form
 
 class MainWindow(QtWidgets.QWidget, Ui_Form):
     def __init__(self):

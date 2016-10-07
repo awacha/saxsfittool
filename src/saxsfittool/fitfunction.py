@@ -17,5 +17,3 @@ class FitFunction(object):
 
     def initialize_arguments(self, x, y):
         return [1.0]*len(self.arguments)
-
-class
