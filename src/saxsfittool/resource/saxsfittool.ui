@@ -1,256 +1,362 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>András Ferenc WACHA</author>
  <class>Form</class>
  <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>746</width>
-    <height>446</height>
+    <width>756</width>
+    <height>728</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SAXS Fit Tool</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+    <widget class="QSplitter" name="splitter_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QGroupBox" name="inputdata_box">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="title">
-         <string>Input data</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="0" colspan="2">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Minimum x:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>File:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QDoubleSpinBox" name="maximumXDoubleSpinBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="decimals">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Maximum x:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QDoubleSpinBox" name="minimumXDoubleSpinBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="buttonSymbols">
-            <enum>QAbstractSpinBox::UpDownArrows</enum>
-           </property>
-           <property name="decimals">
-            <number>4</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Plot mode:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2" colspan="2">
-          <widget class="QPushButton" name="openButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Open</string>
-           </property>
-           <property name="icon">
-            <iconset theme="document-open">
-             <normaloff>.</normaloff>.</iconset>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2" colspan="2">
-          <widget class="QComboBox" name="plotModeComboBox"/>
-         </item>
-         <item row="1" column="3" rowspan="2">
-          <widget class="QPushButton" name="setLimitsFromZoomPushButton">
-           <property name="text">
-            <string>Set from
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QFrame" name="inputFrame">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QGroupBox" name="inputdata_box">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Input data</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="1" column="0" colspan="2">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Minimum x:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>File:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QDoubleSpinBox" name="maximumXDoubleSpinBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="decimals">
+              <number>4</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Maximum x:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QDoubleSpinBox" name="minimumXDoubleSpinBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::UpDownArrows</enum>
+             </property>
+             <property name="decimals">
+              <number>4</number>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Plot mode:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2" colspan="2">
+            <widget class="QPushButton" name="openButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Open</string>
+             </property>
+             <property name="icon">
+              <iconset theme="document-open">
+               <normaloff>.</normaloff>.</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2" colspan="2">
+            <widget class="QComboBox" name="plotModeComboBox"/>
+           </item>
+           <item row="1" column="3" rowspan="2">
+            <widget class="QPushButton" name="setLimitsFromZoomPushButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Set from
 zoom</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="fitcontrol_box">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="title">
-         <string>Fit control</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="fitcontrol_box">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Fit control</string>
+          </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="1">
+           <item row="0" column="1" rowspan="2">
             <widget class="QComboBox" name="fitFunctionComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="sizeAdjustPolicy">
               <enum>QComboBox::AdjustToContents</enum>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
+           <item row="4" column="0" colspan="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="executePushButton">
+               <property name="text">
+                <string>Execute</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="rePlotPushButton">
+               <property name="text">
+                <string>Replot</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="plotModelPushButton">
+               <property name="text">
+                <string>Plot model</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="0" column="0" rowspan="2">
             <widget class="QLabel" name="label_4">
              <property name="text">
               <string>Model function:</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="executePushButton">
+           <item row="2" column="1">
+            <widget class="QComboBox" name="algorithmComboBox"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_6">
              <property name="text">
-              <string>Execute</string>
+              <string>Algorithm:</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QPushButton" name="rePlotPushButton">
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>Replot</string>
+              <string>Loss function:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QComboBox" name="lossFunctionComboBox"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="fittingProgressBar">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="maximum">
+           <number>0</number>
+          </property>
+          <property name="value">
+           <number>-1</number>
+          </property>
+          <property name="textVisible">
+           <bool>false</bool>
+          </property>
+          <property name="invertedAppearance">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="parameters_box">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Fit parameters</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QTreeView" name="treeView">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAsNeeded</enum>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="rootIsDecorated">
+              <bool>false</bool>
+             </property>
+             <property name="uniformRowHeights">
+              <bool>true</bool>
+             </property>
+             <property name="itemsExpandable">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
           </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="parameters_box">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="title">
-         <string>Fit parameters</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="tabPosition">
+        <enum>QTabWidget::North</enum>
+       </property>
+       <property name="tabShape">
+        <enum>QTabWidget::Rounded</enum>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <property name="documentMode">
+        <bool>false</bool>
+       </property>
+       <property name="movable">
+        <bool>false</bool>
+       </property>
+       <property name="tabBarAutoHide">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Curves</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QScrollArea" name="scrollArea">
+          <widget class="QWidget" name="figure_widget" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="widgetResizable">
-            <bool>true</bool>
+           <property name="minimumSize">
+            <size>
+             <width>400</width>
+             <height>0</height>
+            </size>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>274</width>
-              <height>126</height>
-             </rect>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QTreeView" name="treeView">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="rootIsDecorated">
-                <bool>false</bool>
-               </property>
-               <property name="uniformRowHeights">
-                <bool>true</bool>
-               </property>
-               <property name="itemsExpandable">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <layout class="QVBoxLayout" name="figureLayout"/>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
        </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="figure_widget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>400</width>
-       <height>0</height>
-      </size>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <layout class="QVBoxLayout" name="figureLayout"/>
-      </item>
-     </layout>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Model representation</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <layout class="QVBoxLayout" name="reprFigureLayout"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="logContainerWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>100</height>
+       </size>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <layout class="QHBoxLayout" name="logContainerLayout"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
