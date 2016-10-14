@@ -1,8 +1,10 @@
-import numpy as np
 import numbers
 import time
-from scipy.optimize import least_squares, OptimizeResult
+
+import numpy as np
 from scipy.linalg import svd
+from scipy.optimize import least_squares, OptimizeResult
+
 
 class Fitter:
     def __init__(self, function, parameters, x, y, dx=None, dy=None, lbounds=None, ubounds=None):
@@ -63,7 +65,15 @@ class Fitter:
         self._stats['optimality'] = result.optimality
         self._stats['cost'] = result.cost
         self._stats['status'] = result.status
-        self._stats['active_mask'] =result.active_mask
+        active_mask_resolved = self._fixed_parameters[:]
+        active_mask_orig = result.active_mask.tolist()
+        for i in range(len(active_mask_resolved)):
+            if active_mask_resolved[i] is None:
+                active_mask_resolved[i] = active_mask_orig.pop()
+            else:
+                active_mask_resolved[i] = 0
+        self._stats['active_mask'] = active_mask_resolved
+        self._stats['active_mask_original'] = result.active_mask
         self._stats['Chi2'] = (result.fun ** 2).sum()
         self._stats['DoF'] = len(self.x()) - len(self.freeParameters())
         self._stats['Chi2_reduced'] = self._stats['Chi2'] / self._stats['DoF']
@@ -76,6 +86,9 @@ class Fitter:
             self._stats['SSres_weighted'] = (((funcvalue - self.y()) / self.dy()) ** 2).sum()
             self._stats['R2_weighted'] = 1 - self._stats['SSres_weighted'] / self._stats['SStot_weighted']
             self._stats['R2_adj_weighted'] = 1 - (self._stats['SSres_weighted'] / (len(self.x()) - len(self.freeParameters()) - 1)) / (self._stats['SStot_weighted'] / (len(self.x()) - 1))
+        else:
+            for key in ['SStot', 'SSres', 'R2', 'R2_adj']:
+                self._stats[key + '_weighted'] = self._stats[key]
         self._stats['result']=result
         self._stats['time']=time.monotonic()-starttime
         return self

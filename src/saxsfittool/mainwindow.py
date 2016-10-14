@@ -1,17 +1,20 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
-import numpy as np
 import logging
-import textwrap
 import sys
+import textwrap
 from concurrent.futures import ProcessPoolExecutor, Future
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
-from matplotlib.axes import Axes
 
-from .resource.saxsfittool_ui import Ui_Form
+import matplotlib.cm
+import numpy as np
+from PyQt5 import QtWidgets, QtGui, QtCore
+from matplotlib.axes import Axes
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
+from matplotlib.figure import Figure
+from matplotlib.gridspec import GridSpec
+
 from .fitfunction import FitFunction
-from .logviewer import LogViewer
 from .fitter import Fitter
+from .logviewer import LogViewer
+from .resource.saxsfittool_ui import Ui_Form
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +110,8 @@ class FitParametersModel(QtCore.QAbstractItemModel):
                                      'lowerbound': 0,
                                      'lowerbound_enabled': False,
                                      'upperbound_enabled': False,
+                                     'lowerbound_active': False,
+                                     'upperbound_active': False,
                                      'upperbound': 0,
                                      'value': 1,
                                      'uncertainty': 0,
@@ -182,6 +187,8 @@ class FitParametersModel(QtCore.QAbstractItemModel):
                 return self._parameters[row]['lowerbound']
             elif role == QtCore.Qt.CheckStateRole:
                 return [QtCore.Qt.Unchecked, QtCore.Qt.Checked][self._parameters[row]['lowerbound_enabled']]
+            elif role == QtCore.Qt.DecorationRole:
+                return [None, QtGui.QIcon.fromTheme('dialog-warning')][self._parameters[row]['lowerbound_active']]
         elif column == 2:
             if role == QtCore.Qt.DisplayRole:
                 if self._parameters[row]['upperbound_enabled']:
@@ -193,11 +200,19 @@ class FitParametersModel(QtCore.QAbstractItemModel):
                 return self._parameters[row]['upperbound']
             elif role == QtCore.Qt.CheckStateRole:
                 return [QtCore.Qt.Unchecked, QtCore.Qt.Checked][self._parameters[row]['upperbound_enabled']]
+            elif role == QtCore.Qt.DecorationRole:
+                return [None, QtGui.QIcon.fromTheme('dialog-warning')][self._parameters[row]['upperbound_active']]
         elif column == 3:
             if role == QtCore.Qt.DisplayRole:
                 return str(self._parameters[row]['value'])
             elif role == QtCore.Qt.EditRole:
                 return self._parameters[row]['value']
+            elif role == QtCore.Qt.BackgroundRole:
+                if ((self._parameters[row]['upperbound_enabled'] and
+                             self._parameters[row]['value'] > self._parameters[row]['upperbound']) or
+                        (self._parameters[row]['lowerbound_enabled'] and
+                                 self._parameters[row]['value'] < self._parameters[row]['lowerbound'])):
+                    return QtGui.QBrush(QtCore.Qt.red)
         elif column == 4:
             if role == QtCore.Qt.DisplayRole:
                 if self._parameters[row]['enabled']:
@@ -219,22 +234,22 @@ class FitParametersModel(QtCore.QAbstractItemModel):
                 self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1, None))
             elif column == 1:
                 self._parameters[row]['lowerbound_enabled'] = data == QtCore.Qt.Checked
-                self.dataChanged.emit(modelindex, modelindex)
+                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
             elif column == 2:
                 self._parameters[row]['upperbound_enabled'] = data == QtCore.Qt.Checked
-                self.dataChanged.emit(modelindex, modelindex)
+                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
             else:
                 return False
         elif role == QtCore.Qt.EditRole:
             if column == 1:
                 self._parameters[row]['lowerbound'] = float(data)
-                self.dataChanged.emit(modelindex, modelindex)
+                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
             elif column == 2:
                 self._parameters[row]['upperbound'] = float(data)
-                self.dataChanged.emit(modelindex, modelindex)
+                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
             elif column == 3:
                 self._parameters[row]['value'] = float(data)
-                self.dataChanged.emit(modelindex, modelindex)
+                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
             else:
                 return False
         else:
@@ -261,17 +276,49 @@ class FitParametersModel(QtCore.QAbstractItemModel):
         for par, low, up in zip(self._parameters, lower, upper):
             if low is None or low == np.nan:
                 par['lowerbound_enabled'] = False
-                par['lowerbound'] = np.nan
+                par['lowerbound'] = 0
             else:
                 par['lowerbound_enabled'] = True
                 par['lowerbouund'] = low
             if up is None or up == np.nan:
                 par['upperbound_enabled'] = False
-                par['upperbound'] = np.nan
+                par['upperbound'] = 0
             else:
                 par['upperbound_enabled'] = True
                 par['upperbound'] = up
         self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(), self.columnCount()))
+
+    def update_active_mask(self, active_mask):
+        for par, am in zip(self._parameters, active_mask):
+            par['upperbound_active'] = (am == 1)
+            par['lowerbound_active'] = (am == -1)
+        self.dataChanged.emit(self.createIndex(0, 1), self.createIndex(self.rowCount() - 1, 2),
+                              [QtCore.Qt.DecorationRole])
+
+
+class ParameterCorrelationModel(QtCore.QAbstractTableModel):
+    def __init__(self, correlmatrix, parnames):
+        super().__init__()
+        self._correlmatrix = correlmatrix
+        self._parnames = parnames
+
+    def rowCount(self, parent=None, *args, **kwargs):
+        return self._correlmatrix.shape[0]
+
+    def columnCount(self, parent=None, *args, **kwargs):
+        return self._correlmatrix.shape[1]
+
+    def data(self, index: QtCore.QModelIndex, role=None):
+        if role == QtCore.Qt.DisplayRole:
+            return '{:.4f}'.format(self._correlmatrix[index.row(), index.column()])
+        if role == QtCore.Qt.BackgroundRole:
+            color = matplotlib.cm.RdYlGn_r(np.abs(self._correlmatrix[index.row(), index.column()]))
+            return QtGui.QBrush(QtGui.QColor(*[int(component * 255) for component in color]))
+
+    def headerData(self, idx, orientation, role=None):
+        if role == QtCore.Qt.DisplayRole:
+            return self._parnames[idx]
+        return None
 
 
 class MainWindow(QtWidgets.QWidget, Ui_Form):
@@ -283,6 +330,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self._timer.setSingleShot(False)
         self._fit_executor = ProcessPoolExecutor(max_workers=1)
         self._fit_future = None
+        self._line_roi = None
+        self._line_masked = None
+        self._line_fitted = None
+        self._line_residuals = None
         self.setupUi(self)
         self.openButton.clicked.connect(self.openFile)
         logging.root.addHandler(self.logViewer)
@@ -309,8 +360,18 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.figureLayout.addWidget(Form.figureCanvas)
         Form.figureToolbar = NavigationToolbar2QT(Form.figureCanvas, Form)
         Form.figureLayout.addWidget(Form.figureToolbar)
-        Form.axes = Form.figure.add_subplot(1, 1, 1)
-        # ToDo: axes for residuals with subplot grid
+        gs = GridSpec(4, 1, hspace=0)
+        Form.axes = Form.figure.add_subplot(gs[:-1, :])
+        Form.axes.xaxis.set_ticks_position('top')
+        Form.axes.tick_params(labelbottom=False, labeltop=False)
+        Form.axes_residuals = Form.figure.add_subplot(gs[-1, :])
+
+        Form.figure_representation = Figure()
+        Form.figureCanvas_representation = FigureCanvasQTAgg(figure=Form.figure_representation)
+        Form.reprFigureLayout.addWidget(Form.figureCanvas_representation)
+        Form.figureToolbar_representation = NavigationToolbar2QT(Form.figureCanvas_representation, Form)
+        Form.reprFigureLayout.addWidget(Form.figureToolbar_representation)
+
         Form.plotModeModel = QtGui.QStandardItemModel()
         Form.plotModeModel.appendColumn([QtGui.QStandardItem(x) for x in ['lin-lin', 'lin-log', 'log-lin', 'log-log']])
         Form.plotModeComboBox.setModel(Form.plotModeModel)
@@ -373,7 +434,12 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         filename, filter = QtWidgets.QFileDialog.getOpenFileName(self, "Open curve...")
         if filename is None:
             return
-        self.dataset = np.loadtxt(filename)
+        try:
+            self.dataset = np.loadtxt(filename)
+        except Exception as exc:
+            QtWidgets.QMessageBox.critical(self, 'Error while opening file', str(exc),
+                                           QtWidgets.QMessageBox.Close, QtWidgets.QMessageBox.NoButton)
+            return
         # ToDo: handle exceptions in the previous statement
         self.setLimits()
 
@@ -390,16 +456,40 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.rePlot()
 
     def rePlotModel(self):
+        if self._line_fitted is not None:
+            self._line_fitted.remove()
+            self._line_fitted = None
+        if self._line_residuals is not None:
+            self._line_residuals.remove()
+            self._line_residuals = None
         funcvalue = self.fitter().evaluateFunction()
-        self.axes.plot(self.roiX, funcvalue, 'r-')
+        self._line_fitted = self.axes.plot(self.roiX, funcvalue, 'r-')[0]
+        self._line_residuals = self.axes_residuals.plot(self.roiX, self.roiY - funcvalue, 'b.-')[0]
+        self.axes_residuals.set_xlim(*self.axes.get_xlim())
+        self.axes_residuals.set_xscale(self.axes.get_xscale())
+        self.axes_residuals.grid(True, which='both')
         self.figureCanvas.draw()
+        ff = self.fitFunctionClass()()
+        assert isinstance(ff, FitFunction)
+        ff.draw_representation(self.figure_representation, self.roiX,
+                               *[p['value'] for p in self.parametersModel.parameters])
+        self.figureCanvas_representation.draw()
 
     def rePlot(self):
         assert isinstance(self.axes, Axes)
-        self.axes.clear()
+        if self._line_fitted is not None:
+            self._line_fitted.remove()
+            self._line_fitted = None
+        if self._line_masked is not None:
+            self._line_masked.remove()
+            self._line_masked = None
+        if self._line_roi is not None:
+            self._line_roi.remove()
+            self._line_roi = None
         mask = self.dataMask
-        self.axes.errorbar(self.roiX, self.roiY, self.roiDY, self.roiDX, 'b.')
-        self.axes.plot(self.maskedX, self.maskedY, '.', color='gray')
+        self._line_roi = self.axes.errorbar(self.roiX, self.roiY, self.roiDY, self.roiDX, 'b.')
+        self._line_masked = self.axes.plot(self.maskedX, self.maskedY, '.', color='gray')[0]
+        self.axes.autoscale(True, 'both', True)
         self.axes.grid(True, which='both')
         scaling = self.plotModeComboBox.currentText()
         if scaling.split('-')[0] == 'lin':
@@ -410,7 +500,11 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self.axes.set_yscale('linear')
         else:
             self.axes.set_yscale('log')
+        self.axes_residuals.set_xlim(*self.axes.get_xlim())
+        self.axes_residuals.set_xscale(self.axes.get_xscale())
+        self.axes_residuals.grid(True, which='both')
         self.figureCanvas.draw()
+
 
     @property
     def roiX(self):
@@ -491,7 +585,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         val = [p['value'] for p in params]
         lbound = [[-np.inf, p['lowerbound']][p['lowerbound_enabled']] for p in params]
         ubound = [[np.inf, p['upperbound']][p['upperbound_enabled']] for p in params]
-        return Fitter(ff.function, val, self.roiX, self.roiY, self.roiDX, self.roiDY, lbound, ubound)
+        if self.weightingCheckBox.checkState() == QtCore.Qt.Checked:
+            return Fitter(ff.function, val, self.roiX, self.roiY, self.roiDX, self.roiDY, lbound, ubound)
+        else:
+            return Fitter(ff.function, val, self.roiX, self.roiY, None, None, lbound, ubound)
 
     def doFitting(self):
         logger.info('Starting fit of dataset.')
@@ -546,6 +643,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                         '  Cost: {5[cost]}\n'
                         '  Status: {5[status]}\n'
                         '  Active_mask: {5[active_mask]}\n'
+                        '  Original active_mask: {5[active_mask_original]}\n'
                         '  Chi2: {5[Chi2]}\n'
                         '  Reduced Chi2: {5[Chi2_reduced]}\n'
                         '  Degrees of freedom: {5[DoF]}\n'
@@ -559,6 +657,9 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                                 textwrap.indent(correlmatrixformatted, '    '),
                                 stats))
             self.parametersModel.update_parameters(self._fitter.parameters(), self._fitter.uncertainties())
+            self.correlationTableView.setModel(ParameterCorrelationModel(self._fitter.correlationMatrix(),
+                                                                         [arg[0] for arg in func.arguments]))
+            self.parametersModel.update_active_mask(stats['active_mask'])
             self.rePlotModel()
         finally:
             self._fit_future = None
@@ -568,8 +669,11 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self._timer.stop()
 
 
-if __name__ == '__main__':
+def run():
     app = QtWidgets.QApplication(sys.argv)
     mw = MainWindow()
     logging.root.setLevel(logging.DEBUG)
     app.exec_()
+
+if __name__ == '__main__':
+    run()

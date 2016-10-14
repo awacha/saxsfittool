@@ -1,4 +1,3 @@
-from libc.math cimport sqrt, sin, cos, exp, M_PI
 import numpy as np
 cimport numpy as np
 
@@ -24,7 +23,7 @@ def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, 
                                     double rhoguestin, double rhohead, double rhoguestout, double deltarguestin,
                                     double deltarhead, double deltarguestout, double sigmaguestin, double sigmahead,
                                     double sigmatail, double sigmaguestout, Py_ssize_t Nbilayers=1,
-                                    Py_ssize_t NRdistrib=1000):
+                                    Py_ssize_t NRdistrib=100):
     out = np.empty(len(q), np.double)
     cdef np.broadcast it = np.broadcast(q, out)
     cdef double q_, intensity_averaged, r, weight, sumweight, intensity_singleobject

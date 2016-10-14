@@ -1,15 +1,13 @@
 #!/usb/bin/env python
 
-import os, pickle
+import os
 from distutils.sysconfig import get_python_lib, get_python_inc
 
 try:
     from Cython.Build import cythonize
 except ImportError:
     cythonize = lambda x:x
-from setuptools import setup, find_packages
-import pkg_resources
-import setuptools_scm
+from setuptools import setup
 from setuptools.extension import Extension
 try:
     from PyQt5.uic import compileUi
@@ -51,6 +49,8 @@ setup(name='saxsfittool', author='Andras Wacha',
       description='GUI utility for model fitting to SAXS curves',
       package_dir={'': 'src'},
       packages=['saxsfittool', 'saxsfittool.resource', 'saxsfittool.fitfunction'],
+      entry_points={'gui_scripts': ['saxsfittool = saxsfittool.mainwindow:run'],
+                    },
       package_data={'': ['*.ui']},
       ext_modules=cythonize(ext_modules),
       install_requires=['numpy>=1.0.0', 'scipy>=0.7.0', 'matplotlib',
