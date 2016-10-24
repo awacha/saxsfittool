@@ -163,7 +163,7 @@ zoom</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="0" colspan="2">
+           <item row="6" column="0" colspan="2">
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QPushButton" name="executePushButton">
@@ -215,7 +215,7 @@ zoom</string>
            <item row="3" column="1">
             <widget class="QComboBox" name="lossFunctionComboBox"/>
            </item>
-           <item row="4" column="0" colspan="2">
+           <item row="5" column="0" colspan="2">
             <widget class="QCheckBox" name="weightingCheckBox">
              <property name="text">
               <string>Use y error bars for weights</string>
@@ -224,6 +224,16 @@ zoom</string>
               <bool>true</bool>
              </property>
             </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>Y transform:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="yTransformComboBox"/>
            </item>
           </layout>
          </widget>
@@ -270,8 +280,14 @@ zoom</string>
              <property name="horizontalScrollBarPolicy">
               <enum>Qt::ScrollBarAsNeeded</enum>
              </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::AdjustToContents</enum>
+             </property>
              <property name="alternatingRowColors">
               <bool>true</bool>
+             </property>
+             <property name="verticalScrollMode">
+              <enum>QAbstractItemView::ScrollPerPixel</enum>
              </property>
              <property name="rootIsDecorated">
               <bool>false</bool>

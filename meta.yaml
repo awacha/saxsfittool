@@ -35,9 +35,9 @@ about:
   summary: Fitting models to SAXS curves
   description: A GUI utility for nonlinear least-squares fitting of various models to small-angle X-ray scattering curves or other experimental results
 
-#app:
-#  entry: tem_circlefind   [linux]
-#  entry: tem_circlefind   [win]
-#  summary: Circle finding tool for transmission electron micrographs
-#  type: desk
+app:
+  entry: saxsfittool   [linux]
+  entry: saxsfittool   [win]
+  summary: A GUI utility for nonlinear least-squares fitting of various models to small-angle X-ray scattering curves or other experimental results
+  type: desk
 #  icon: tem_circlefind.png

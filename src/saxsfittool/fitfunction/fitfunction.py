@@ -92,6 +92,22 @@ class F2CoreShellEllipsoid(FitFunction):
     def function(self, x, eta_core, eta_shell, eta_solvent, a, b, t):
         return F2EllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, t)
 
+class F2CoreShellEllipsoidWithBackground(FitFunction):
+    name = 'Rotational core-shell ellipsoid + constant background'
+
+    arguments = [('eta_core', 'SLD of the core'),
+                 ('eta_shell', 'SLD of the shell'),
+                 ('eta_solvent', 'SLD of the solvent'),
+                 ('a', 'Principal semi-axis of the core'),
+                 ('b', 'Equatorial semi-axis of the core'),
+                 ('t', 'Shell thickness'),
+                 ('bg', 'Constant background')]
+
+    description = "Scattering intensity of a rotational core-shell ellipsoid with additional constant background"
+
+    def function(self, x, eta_core, eta_shell, eta_solvent, a, b, t, C):
+        return F2EllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, t) + C
+
 
 class Gaussian(FitFunction):
     name = 'Gaussian peak'

@@ -360,11 +360,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.figureLayout.addWidget(Form.figureCanvas)
         Form.figureToolbar = NavigationToolbar2QT(Form.figureCanvas, Form)
         Form.figureLayout.addWidget(Form.figureToolbar)
-        gs = GridSpec(4, 1, hspace=0)
-        Form.axes = Form.figure.add_subplot(gs[:-1, :])
-        Form.axes.xaxis.set_ticks_position('top')
-        Form.axes.tick_params(labelbottom=False, labeltop=False)
-        Form.axes_residuals = Form.figure.add_subplot(gs[-1, :])
+        Form.initializeFigures()
 
         Form.figure_representation = Figure()
         Form.figureCanvas_representation = FigureCanvasQTAgg(figure=Form.figure_representation)
@@ -379,7 +375,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.minimumXDoubleSpinBox.valueChanged.connect(Form.minimumXDoubleSpinBoxChanged)
         Form.maximumXDoubleSpinBox.valueChanged.connect(Form.maximumXDoubleSpinBoxChanged)
         Form.plotModeComboBox.currentTextChanged.connect(Form.rePlot)
-        Form.rePlotPushButton.clicked.connect(Form.rePlot)
+        Form.rePlotPushButton.clicked.connect(lambda :Form.rePlot(full=True))
         Form.setLimitsFromZoomPushButton.clicked.connect(Form.setLimitsFromZoom)
         Form.executePushButton.clicked.connect(Form.doFitting)
         Form.fitfunctionsModel = FitFunctionsModel()
@@ -396,6 +392,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.fittingProgressBar.hide()
         Form.fitFunctionSelected()
         Form.setLimits()
+        Form.yTransformComboBox.insertItems(0, ['identity', 'ln'])
         Form.rePlot()
 
     def fitFunctionSelected(self):
@@ -442,6 +439,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             return
         # ToDo: handle exceptions in the previous statement
         self.setLimits()
+        self.rePlot(full=True)
 
     def setLimits(self):
         self.minimumXDoubleSpinBox.setMinimum(self.dataX.min())
@@ -462,9 +460,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         if self._line_residuals is not None:
             self._line_residuals.remove()
             self._line_residuals = None
-        funcvalue = self.fitter().evaluateFunction()
-        self._line_fitted = self.axes.plot(self.roiX, funcvalue, 'r-')[0]
-        self._line_residuals = self.axes_residuals.plot(self.roiX, self.roiY - funcvalue, 'b.-')[0]
+        fitter = self.fitter()
+        funcvalue = fitter.evaluateFunction()
+        self._line_fitted = self.axes.plot(fitter.x(), funcvalue, 'r-')[0]
+        self._line_residuals = self.axes_residuals.plot(fitter.x(), fitter.y() - funcvalue, 'b.-')[0]
         self.axes_residuals.set_xlim(*self.axes.get_xlim())
         self.axes_residuals.set_xscale(self.axes.get_xscale())
         self.axes_residuals.grid(True, which='both')
@@ -475,8 +474,22 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                                *[p['value'] for p in self.parametersModel.parameters])
         self.figureCanvas_representation.draw()
 
-    def rePlot(self):
+    def initializeFigures(self):
+        gs = GridSpec(4, 1, hspace=0)
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(gs[:-1, :])
+        self.axes.xaxis.set_ticks_position('top')
+        self.axes.tick_params(labelbottom=False, labeltop=False)
+        self.axes_residuals = self.figure.add_subplot(gs[-1, :], sharex=self.axes)
+        self._line_residuals = None
+        self._line_roi = None
+        self._line_masked = None
+        self._line_fitted = None
+
+    def rePlot(self, full=False):
         assert isinstance(self.axes, Axes)
+        if full:
+            self.initializeFigures()
         if self._line_fitted is not None:
             self._line_fitted.remove()
             self._line_fitted = None
@@ -504,7 +517,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.axes_residuals.set_xscale(self.axes.get_xscale())
         self.axes_residuals.grid(True, which='both')
         self.figureCanvas.draw()
-
 
     @property
     def roiX(self):
@@ -585,10 +597,16 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         val = [p['value'] for p in params]
         lbound = [[-np.inf, p['lowerbound']][p['lowerbound_enabled']] for p in params]
         ubound = [[np.inf, p['upperbound']][p['upperbound_enabled']] for p in params]
+        assert isinstance(self.yTransformComboBox, QtWidgets.QComboBox)
+        y = self.roiY
+        x = self.roiX
+        dy = self.roiDY
+        dx = self.roiDX
+        func = ff.function
         if self.weightingCheckBox.checkState() == QtCore.Qt.Checked:
-            return Fitter(ff.function, val, self.roiX, self.roiY, self.roiDX, self.roiDY, lbound, ubound)
+            return Fitter(func, val, x, y, dx, dy, lbound, ubound, ytransform=self.yTransformComboBox.currentText())
         else:
-            return Fitter(ff.function, val, self.roiX, self.roiY, None, None, lbound, ubound)
+            return Fitter(func, val, x, y, None, None, lbound, ubound, ytransform=self.yTransformComboBox.currentText())
 
     def doFitting(self):
         logger.info('Starting fit of dataset.')
@@ -621,6 +639,9 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                 return
             self._fitter = self._fit_future.result()
             stats = self._fitter.stats()
+            if not stats['success']:
+                logger.error('Fitting error: {}'.format(stats['message']))
+                return
             func = self.fitFunctionClass()
             pars = self._fitter.parameters()
             uncs = self._fitter.uncertainties()
@@ -674,6 +695,7 @@ def run():
     mw = MainWindow()
     logging.root.setLevel(logging.DEBUG)
     app.exec_()
+
 
 if __name__ == '__main__':
     run()

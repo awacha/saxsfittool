@@ -289,12 +289,12 @@ static CYTHON_INLINE float __PYX_NAN() {
 
 #define __PYX_HAVE__src__saxsfittool__fitfunction__c_bilayer
 #define __PYX_HAVE_API__src__saxsfittool__fitfunction__c_bilayer
-#include "math.h"
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
+#include "math.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1194,8 +1194,6 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'libc.math' */
-
 /* Module declarations from 'cpython.buffer' */
 
 /* Module declarations from 'libc.string' */
@@ -1224,6 +1222,8 @@ static PyTypeObject *__pyx_ptype_5numpy_broadcast = 0;
 static PyTypeObject *__pyx_ptype_5numpy_ndarray = 0;
 static PyTypeObject *__pyx_ptype_5numpy_ufunc = 0;
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, char *, char *, int *); /*proto*/
+
+/* Module declarations from 'libc.math' */
 
 /* Module declarations from 'src.saxsfittool.fitfunction.c_bilayer' */
 static double __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer(double, double, double, double); /*proto*/
@@ -4336,19 +4336,18 @@ PyMODINIT_FUNC PyInit_c_bilayer(void)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":2
- * from libc.math cimport sqrt, sin, cos, exp, M_PI
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":1
  * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as np
- * 
+ * from libc.math cimport exp, sin, cos
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "src/saxsfittool/fitfunction/c_bilayer.pyx":5
- * cimport numpy as np
+ * from libc.math cimport exp, sin, cos
  * 
  * np.import_array()             # <<<<<<<<<<<<<<
  * 
@@ -4369,9 +4368,9 @@ PyMODINIT_FUNC PyInit_c_bilayer(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "src/saxsfittool/fitfunction/c_bilayer.pyx":1
- * from libc.math cimport sqrt, sin, cos, exp, M_PI             # <<<<<<<<<<<<<<
- * import numpy as np
+ * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as np
+ * from libc.math cimport exp, sin, cos
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

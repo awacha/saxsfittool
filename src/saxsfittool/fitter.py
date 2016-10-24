@@ -7,7 +7,8 @@ from scipy.optimize import least_squares, OptimizeResult
 
 
 class Fitter:
-    def __init__(self, function, parameters, x, y, dx=None, dy=None, lbounds=None, ubounds=None):
+    def __init__(self, function, parameters, x, y, dx=None, dy=None, lbounds=None, ubounds=None, ytransform=None):
+        self.ytransform = ytransform
         self._function = function
         self._parameters=parameters
         self._fixed_parameters = [None]*len(parameters)
@@ -46,8 +47,11 @@ class Fitter:
             self._fitfunction(), self.freeParameters(),
             bounds=(self.freeLbounds(), self.freeUbounds()), **kwargs)
         assert isinstance(result, OptimizeResult)
+        self._stats={'success':result.success, 'result':result,'message':result.message,'status':result.status,
+                     'time':time.monotonic()-starttime, 'nfev':result.nfev, 'njev':result.njev,'cost':result.cost,
+                     'active_mask_original':result.active_mask,'optimality':result.optimality, 'grad':result.grad,
+                     'jac':result.jac}
         if not result.success:
-            self._stats={'success':False}
             return self
         _, s, VT = svd(result.jac, full_matrices=False)
         threshold = np.finfo(float).eps * max(result.jac.shape) * s[0]
@@ -58,22 +62,14 @@ class Fitter:
         self._covariance=self._substitute_fixed_parameters_covar(pcov)
         self._uncertainties=np.diag(self._covariance, 0)**0.5
         funcvalue= self.evaluateFunction()
-        self._stats['success'] = True
-        self._stats['nfev'] = result.nfev
-        self._stats['njev'] = result.njev
-        self._stats['message'] = result.message
-        self._stats['optimality'] = result.optimality
-        self._stats['cost'] = result.cost
-        self._stats['status'] = result.status
         active_mask_resolved = self._fixed_parameters[:]
         active_mask_orig = result.active_mask.tolist()
         for i in range(len(active_mask_resolved)):
             if active_mask_resolved[i] is None:
-                active_mask_resolved[i] = active_mask_orig.pop()
+                active_mask_resolved[i] = active_mask_orig.pop(0)
             else:
                 active_mask_resolved[i] = 0
         self._stats['active_mask'] = active_mask_resolved
-        self._stats['active_mask_original'] = result.active_mask
         self._stats['Chi2'] = (result.fun ** 2).sum()
         self._stats['DoF'] = len(self.x()) - len(self.freeParameters())
         self._stats['Chi2_reduced'] = self._stats['Chi2'] / self._stats['DoF']
@@ -89,8 +85,6 @@ class Fitter:
         else:
             for key in ['SStot', 'SSres', 'R2', 'R2_adj']:
                 self._stats[key + '_weighted'] = self._stats[key]
-        self._stats['result']=result
-        self._stats['time']=time.monotonic()-starttime
         return self
 
     def success(self):
@@ -195,12 +189,25 @@ class Fitter:
         x=self.x()
         y=self.y()
         dy=self.dy()
-        if dy is None:
-            def func(args):
-                return y - self._function(x, *self._substitute_fixed_parameters(args.tolist()))
+        if self.ytransform == 'ln':
+            idx = y>0
+            if dy is not None:
+                dy = dy[idx]/np.abs(y[idx])
+            y=np.log(y[idx])
+            x=x[idx]
+            if dy is None:
+                def func(args):
+                    return y - np.log(self._function(x, *self._substitute_fixed_parameters(args.tolist())))
+            else:
+                def func(args):
+                    return (y -np.log(self._function(x, *self._substitute_fixed_parameters(args.tolist()))))/dy
         else:
-            def func(args):
-                return (y - self._function(x, *self._substitute_fixed_parameters(args.tolist()))) / dy
+            if dy is None:
+                def func(args):
+                    return y - self._function(x, *self._substitute_fixed_parameters(args.tolist()))
+            else:
+                def func(args):
+                    return (y - self._function(x, *self._substitute_fixed_parameters(args.tolist()))) / dy
         return func
 
     def evaluateFunction(self):
