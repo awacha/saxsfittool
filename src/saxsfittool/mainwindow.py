@@ -10,9 +10,9 @@ from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec
+from sastool.classes2.curve import Curve, FixedParameter
 
 from .fitfunction import FitFunction
-from .fitter import Fitter
 from .logviewer import LogViewer
 from .resource.saxsfittool_ui import Ui_Form
 
@@ -334,10 +334,15 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self._line_masked = None
         self._line_fitted = None
         self._line_residuals = None
+        self._lastfitcurve = None
+        self._lastfitstats = None
         self.setupUi(self)
         self.openButton.clicked.connect(self.openFile)
         logging.root.addHandler(self.logViewer)
         self.show()
+
+    def curve(self):
+        return Curve(self.roiX, self.roiY, self.roiDY, self.roiDX)
 
     def makeTestData(self):
         self.dataset = np.empty((100, 4), dtype=np.float)
@@ -375,7 +380,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.minimumXDoubleSpinBox.valueChanged.connect(Form.minimumXDoubleSpinBoxChanged)
         Form.maximumXDoubleSpinBox.valueChanged.connect(Form.maximumXDoubleSpinBoxChanged)
         Form.plotModeComboBox.currentTextChanged.connect(Form.rePlot)
-        Form.rePlotPushButton.clicked.connect(lambda :Form.rePlot(full=True))
+        Form.rePlotPushButton.clicked.connect(lambda: Form.rePlot(full=True))
         Form.setLimitsFromZoomPushButton.clicked.connect(Form.setLimitsFromZoom)
         Form.executePushButton.clicked.connect(Form.doFitting)
         Form.fitfunctionsModel = FitFunctionsModel()
@@ -393,7 +398,11 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.fitFunctionSelected()
         Form.setLimits()
         Form.yTransformComboBox.insertItems(0, ['identity', 'ln'])
+        Form.statisticsModel = QtGui.QStandardItemModel(0, 2)
+        Form.statisticsModel.setHorizontalHeaderLabels(['Parameter', 'Value'])
+        Form.statisticsTreeView.setModel(Form.statisticsModel)
         Form.rePlot()
+
 
     def fitFunctionSelected(self):
         FitFunctionClass = self.fitFunctionClass()
@@ -460,16 +469,17 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         if self._line_residuals is not None:
             self._line_residuals.remove()
             self._line_residuals = None
-        fitter = self.fitter()
-        funcvalue = fitter.evaluateFunction()
-        self._line_fitted = self.axes.plot(fitter.x(), funcvalue, 'r-')[0]
-        self._line_residuals = self.axes_residuals.plot(fitter.x(), fitter.y() - funcvalue, 'b.-')[0]
+        params = self.parametersModel.parameters
+        val = [p['value'] for p in params]
+        ff = self.fitFunctionClass()()
+        assert isinstance(ff, FitFunction)
+        fittedcurve = Curve(self.roiX, ff.function(self.roiX, *val))
+        self._line_fitted, = fittedcurve.plot('r-', axes=self.axes)
+        self._line_residuals, = (self.curve() - fittedcurve).plot('b.-', axes=self.axes_residuals)
         self.axes_residuals.set_xlim(*self.axes.get_xlim())
         self.axes_residuals.set_xscale(self.axes.get_xscale())
         self.axes_residuals.grid(True, which='both')
         self.figureCanvas.draw()
-        ff = self.fitFunctionClass()()
-        assert isinstance(ff, FitFunction)
         ff.draw_representation(self.figure_representation, self.roiX,
                                *[p['value'] for p in self.parametersModel.parameters])
         self.figureCanvas_representation.draw()
@@ -589,40 +599,21 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         return np.logical_and(self.dataX >= self.minimumXDoubleSpinBox.value(),
                               self.dataX <= self.maximumXDoubleSpinBox.value())
 
-    def fitter(self):
-        FitFunctionClass = self.fitFunctionClass()
-        ff = FitFunctionClass()
-        assert isinstance(ff, FitFunction)
-        params = self.parametersModel.parameters
-        val = [p['value'] for p in params]
-        lbound = [[-np.inf, p['lowerbound']][p['lowerbound_enabled']] for p in params]
-        ubound = [[np.inf, p['upperbound']][p['upperbound_enabled']] for p in params]
-        assert isinstance(self.yTransformComboBox, QtWidgets.QComboBox)
-        y = self.roiY
-        x = self.roiX
-        dy = self.roiDY
-        dx = self.roiDX
-        func = ff.function
-        if self.weightingCheckBox.checkState() == QtCore.Qt.Checked:
-            return Fitter(func, val, x, y, dx, dy, lbound, ubound, ytransform=self.yTransformComboBox.currentText())
-        else:
-            return Fitter(func, val, x, y, None, None, lbound, ubound, ytransform=self.yTransformComboBox.currentText())
 
     def doFitting(self):
         logger.info('Starting fit of dataset.')
-        fitter = self.fitter()
         params = self.parametersModel.parameters
-        fittable = [p['enabled'] for p in params]
-        if not fittable:
+        val = [[FixedParameter(p['value']), float(p['value'])][p['enabled']] for p in params]
+        if all([isinstance(x, FixedParameter) for x in val]):
             logger.error('Cannot fit with no free parameters.')
             return
-        if not fitter.checkBounds():
-            logger.error('Cannot start fit: starting values are outside the bounds.')
-            return
-        self._fitter = fitter
-        fixedvalues = [[fitter.parameters()[i], None][fittable[i]] for i in range(len(params))]
-        self._fitter.fixparameters(fixedvalues)
-        self._fit_future = self._fit_executor.submit(self._fitter.fit, loss=self.lossFunctionComboBox.currentText(),
+        lbound = [[-np.inf, p['lowerbound']][p['lowerbound_enabled']] for p in params]
+        ubound = [[np.inf, p['upperbound']][p['upperbound_enabled']] for p in params]
+        self._fit_future = self._fit_executor.submit(self.curve().fit,
+                                                     self.fitFunctionClass()().function,
+                                                     val, lbounds=lbound, ubounds=ubound,
+                                                     ytransform=self.yTransformComboBox.currentText(),
+                                                     loss=self.lossFunctionComboBox.currentText(),
                                                      method=self.algorithmComboBox.currentText())
         self.inputFrame.setEnabled(False)
         self.fittingProgressBar.show()
@@ -637,18 +628,19 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             if exc is not None:
                 logger.error('Error while fitting: {}'.format(exc))
                 return
-            self._fitter = self._fit_future.result()
-            stats = self._fitter.stats()
+            fitresults = self._fit_future.result()
+            fitpars = fitresults[:-2]
+            stats = fitresults[-2]
             if not stats['success']:
                 logger.error('Fitting error: {}'.format(stats['message']))
                 return
-            func = self.fitFunctionClass()
-            pars = self._fitter.parameters()
-            uncs = self._fitter.uncertainties()
+            func = self.fitFunctionClass()()
+            pars = [p.val for p in fitpars]
+            uncs = [p.err for p in fitpars]
             parsformatted = '\n'.join(
                 ['{}: {:g} \xb1 {:g}'.format(name, val, unc)
                  for name, val, unc in zip([arg[0] for arg in func.arguments], pars, uncs)])
-            correlmatrixformatted = '{}'.format(self._fitter.correlationMatrix())
+            correlmatrixformatted = '{}'.format(stats['Correlation_coeffs'])
             logger.info('Fitting completed successfully.\n'
                         '  Function: {0}\n'
                         '  X range: {1} to {2}\n'
@@ -671,20 +663,45 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                         '  R2: {5[R2]}\n'
                         '  Adjusted R2: {5[R2_adj]}\n'
                         '  R2 weighted by error bars: {5[R2_weighted]}\n'
-                        '  Adjusted R2 weighted by error bars: {5[R2_adj_weighted]}'
+                        '  Adjusted R2 weighted by error bars: {5[R2_adj_weighted]}\n'
+                        '  CorMap test p-value: {5[CorMapTest_p]}\n'
+                        '  CorMap test largest patch edge length: {5[CorMapTest_C]}\n'
+                        '  CorMap test cormap size: {5[CorMapTest_n]}'
                         .format(self.fitFunctionClass().name,
                                 self.roiX.min(), self.roiY.max(),
                                 textwrap.indent(parsformatted, '    '),
                                 textwrap.indent(correlmatrixformatted, '    '),
                                 stats))
-            self.parametersModel.update_parameters(self._fitter.parameters(), self._fitter.uncertainties())
-            self.correlationTableView.setModel(ParameterCorrelationModel(self._fitter.correlationMatrix(),
+            self.statisticsModel.removeRows(0, self.statisticsModel.rowCount())
+            for rowname, key in [('Duration (sec)', 'time'),
+                                 ('Exit status', 'status'),
+                                 ('Exit message', 'message'),
+                                 ('Number of function evaluations', 'nfev'),
+                                 ('Number of jacobian evaluations', 'njev'),
+                                 ('Optimality', 'optimality'),
+                                 ('Cost', 'cost'),
+                                 ('Active_mask', 'active_mask'),
+                                 ('Original active_mask', 'active_mask_original'),
+                                 ('Degrees of freedom', 'DoF'),
+                                 ('Chi2', 'Chi2'),
+                                 ('Reduced Chi2', 'Chi2_reduced'),
+                                 ('R2', 'R2'),
+                                 ('Adjusted R2', 'R2_adj'),
+                                 ('R2 weighted by errors in y', 'R2_weighted'),
+                                 ('Adjusted R2 weighted by errors in y', 'R2_adj_weighted'),
+                                 ('CorMap test P-value', 'CorMapTest_p'),
+                                 ('CorMap test largest patch edge length', 'CorMapTest_C'),
+                                 ('CorMap test cormap size', 'CorMapTest_n'),
+                                 ]:
+                self.statisticsModel.appendRow([QtGui.QStandardItem(rowname),
+                                                QtGui.QStandardItem(str(stats[key]))])
+            self.parametersModel.update_parameters(pars, uncs)
+            self.correlationTableView.setModel(ParameterCorrelationModel(stats['Correlation_coeffs'],
                                                                          [arg[0] for arg in func.arguments]))
             self.parametersModel.update_active_mask(stats['active_mask'])
             self.rePlotModel()
         finally:
             self._fit_future = None
-            self._fitter = None
             self.fittingProgressBar.hide()
             self.inputFrame.setEnabled(True)
             self._timer.stop()

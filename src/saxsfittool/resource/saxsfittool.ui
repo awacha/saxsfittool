@@ -272,7 +272,7 @@ zoom</string>
            <item>
             <widget class="QTreeView" name="treeView">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+              <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -369,6 +369,16 @@ zoom</string>
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
           <widget class="QTableView" name="correlationTableView"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_4">
+        <attribute name="title">
+         <string>Results</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <widget class="QTreeView" name="statisticsTreeView"/>
          </item>
         </layout>
        </widget>
