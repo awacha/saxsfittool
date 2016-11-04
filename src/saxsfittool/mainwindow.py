@@ -442,11 +442,11 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             return
         try:
             self.dataset = np.loadtxt(filename)
+            self.dataset = self.dataset[np.isfinite(self.dataset.sum(axis=1)), :]
         except Exception as exc:
             QtWidgets.QMessageBox.critical(self, 'Error while opening file', str(exc),
                                            QtWidgets.QMessageBox.Close, QtWidgets.QMessageBox.NoButton)
             return
-        # ToDo: handle exceptions in the previous statement
         self.setLimits()
         self.rePlot(full=True)
 

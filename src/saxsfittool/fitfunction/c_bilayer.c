@@ -9,12 +9,12 @@
             "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5/site-packages/numpy/core/include/numpy/ufuncobject.h"
         ],
         "include_dirs": [
-            "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5",
-            "/home/wachaandras/miniconda3/envs/qtgui/include/python3.5m",
             "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5/site-packages",
-            "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5/numpy/core/include",
+            "/home/wachaandras/miniconda3/envs/qtgui/include/python3.5m",
+            "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5",
+            "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5/site-packages/numpy/core/include",
             "/home/wachaandras/miniconda3/envs/qtgui/include/python3.5m/numpy/core/include",
-            "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5/site-packages/numpy/core/include"
+            "/home/wachaandras/miniconda3/envs/qtgui/lib/python3.5/numpy/core/include"
         ]
     },
     "module_name": "saxsfittool.fitfunction.c_bilayer"
@@ -1244,6 +1244,7 @@ static const char __pyx_k_q[] = "q";
 static const char __pyx_k_r[] = "r";
 static const char __pyx_k_w[] = "w";
 static const char __pyx_k_dR[] = "dR";
+static const char __pyx_k_dd[] = "dd";
 static const char __pyx_k_it[] = "it";
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_out[] = "out";
@@ -1261,6 +1262,7 @@ static const char __pyx_k_NRdistrib[] = "NRdistrib";
 static const char __pyx_k_Nbilayers[] = "Nbilayers";
 static const char __pyx_k_sigmahead[] = "sigmahead";
 static const char __pyx_k_sigmatail[] = "sigmatail";
+static const char __pyx_k_structfac[] = "structfac";
 static const char __pyx_k_sumweight[] = "sumweight";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_deltarhead[] = "deltarhead";
@@ -1271,6 +1273,7 @@ static const char __pyx_k_sigmaguestin[] = "sigmaguestin";
 static const char __pyx_k_deltarguestin[] = "deltarguestin";
 static const char __pyx_k_sigmaguestout[] = "sigmaguestout";
 static const char __pyx_k_deltarguestout[] = "deltarguestout";
+static const char __pyx_k_x_multilamellar[] = "x_multilamellar";
 static const char __pyx_k_intensity_averaged[] = "intensity_averaged";
 static const char __pyx_k_intensity_singleobject[] = "intensity_singleobject";
 static const char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
@@ -1293,6 +1296,7 @@ static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_d;
 static PyObject *__pyx_n_s_dR;
+static PyObject *__pyx_n_s_dd;
 static PyObject *__pyx_n_s_deltarguestin;
 static PyObject *__pyx_n_s_deltarguestout;
 static PyObject *__pyx_n_s_deltarhead;
@@ -1323,12 +1327,14 @@ static PyObject *__pyx_n_s_sigmaguestout;
 static PyObject *__pyx_n_s_sigmahead;
 static PyObject *__pyx_n_s_sigmatail;
 static PyObject *__pyx_n_s_src_saxsfittool_fitfunction_c_bi;
+static PyObject *__pyx_n_s_structfac;
 static PyObject *__pyx_n_s_sumweight;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_w;
 static PyObject *__pyx_n_s_weight;
-static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaussSymmetricHeadBilayer(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_q, double __pyx_v_R, double __pyx_v_dR, double __pyx_v_d, double __pyx_v_rhoguestin, double __pyx_v_rhohead, double __pyx_v_rhoguestout, double __pyx_v_deltarguestin, double __pyx_v_deltarhead, double __pyx_v_deltarguestout, double __pyx_v_sigmaguestin, double __pyx_v_sigmahead, double __pyx_v_sigmatail, double __pyx_v_sigmaguestout, Py_ssize_t __pyx_v_Nbilayers, Py_ssize_t __pyx_v_NRdistrib); /* proto */
+static PyObject *__pyx_n_s_x_multilamellar;
+static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaussSymmetricHeadBilayer(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_q, double __pyx_v_R, double __pyx_v_dR, double __pyx_v_d, double __pyx_v_dd, double __pyx_v_rhoguestin, double __pyx_v_rhohead, double __pyx_v_rhoguestout, double __pyx_v_deltarguestin, double __pyx_v_deltarhead, double __pyx_v_deltarguestout, double __pyx_v_sigmaguestin, double __pyx_v_sigmahead, double __pyx_v_sigmatail, double __pyx_v_sigmaguestout, double __pyx_v_x_multilamellar, Py_ssize_t __pyx_v_Nbilayers, Py_ssize_t __pyx_v_NRdistrib); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tuple_;
@@ -1340,9 +1346,9 @@ static PyObject *__pyx_tuple__6;
 static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_codeobj__8;
 
-/* "src/saxsfittool/fitfunction/c_bilayer.pyx":7
- * np.import_array()
+/* "src/saxsfittool/fitfunction/c_bilayer.pyx":6
  * 
+ * np.import_array()
  * cdef double FGaussianLayer(double q, double rho, double r, double sigma):             # <<<<<<<<<<<<<<
  *     """Scattering form factor amplitude of a radial Gaussian electron density
  *     distribution."""
@@ -1354,7 +1360,7 @@ static double __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer
   double __pyx_t_1;
   __Pyx_RefNannySetupContext("FGaussianLayer", 0);
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":10
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":9
  *     """Scattering form factor amplitude of a radial Gaussian electron density
  *     distribution."""
  *     return 2 * rho * sigma * exp(-q * q * sigma * sigma / 2) * (r * sin(q * r) + sigma * sigma * q * cos(q * r)) / q             # <<<<<<<<<<<<<<
@@ -1364,14 +1370,14 @@ static double __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer
   __pyx_t_1 = ((((2.0 * __pyx_v_rho) * __pyx_v_sigma) * exp((((((-__pyx_v_q) * __pyx_v_q) * __pyx_v_sigma) * __pyx_v_sigma) / 2.0))) * ((__pyx_v_r * sin((__pyx_v_q * __pyx_v_r))) + (((__pyx_v_sigma * __pyx_v_sigma) * __pyx_v_q) * cos((__pyx_v_q * __pyx_v_r)))));
   if (unlikely(__pyx_v_q == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    __PYX_ERR(0, 10, __pyx_L1_error)
+    __PYX_ERR(0, 9, __pyx_L1_error)
   }
   __pyx_r = (__pyx_t_1 / __pyx_v_q);
   goto __pyx_L0;
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":7
- * np.import_array()
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":6
  * 
+ * np.import_array()
  * cdef double FGaussianLayer(double q, double rho, double r, double sigma):             # <<<<<<<<<<<<<<
  *     """Scattering form factor amplitude of a radial Gaussian electron density
  *     distribution."""
@@ -1386,7 +1392,7 @@ static double __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer
   return __pyx_r;
 }
 
-/* "src/saxsfittool/fitfunction/c_bilayer.pyx":12
+/* "src/saxsfittool/fitfunction/c_bilayer.pyx":11
  *     return 2 * rho * sigma * exp(-q * q * sigma * sigma / 2) * (r * sin(q * r) + sigma * sigma * q * cos(q * r)) / q
  * 
  * cdef double FFiveGaussSymmetricHeadBilayer(             # <<<<<<<<<<<<<<
@@ -1399,7 +1405,7 @@ static double __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FFiveGaussSymm
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("FFiveGaussSymmetricHeadBilayer", 0);
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":20
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":19
  *            FGaussianLayer(q, rhohead, rtail - deltarhead, sigmahead) + \
  *            FGaussianLayer(q, -1.0, rtail, sigmatail) + \
  *            FGaussianLayer(q, rhohead, rtail + deltarhead, sigmahead) + \             # <<<<<<<<<<<<<<
@@ -1409,7 +1415,7 @@ static double __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FFiveGaussSymm
   __pyx_r = ((((__pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer(__pyx_v_q, __pyx_v_rhoguestin, (__pyx_v_rtail - __pyx_v_deltarguestin), __pyx_v_sigmaguestin) + __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer(__pyx_v_q, __pyx_v_rhohead, (__pyx_v_rtail - __pyx_v_deltarhead), __pyx_v_sigmahead)) + __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer(__pyx_v_q, -1.0, __pyx_v_rtail, __pyx_v_sigmatail)) + __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer(__pyx_v_q, __pyx_v_rhohead, (__pyx_v_rtail + __pyx_v_deltarhead), __pyx_v_sigmahead)) + __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FGaussianLayer(__pyx_v_q, __pyx_v_rhoguestout, (__pyx_v_rtail + __pyx_v_deltarguestout), __pyx_v_sigmaguestout));
   goto __pyx_L0;
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":12
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":11
  *     return 2 * rho * sigma * exp(-q * q * sigma * sigma / 2) * (r * sin(q * r) + sigma * sigma * q * cos(q * r)) / q
  * 
  * cdef double FFiveGaussSymmetricHeadBilayer(             # <<<<<<<<<<<<<<
@@ -1423,10 +1429,10 @@ static double __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FFiveGaussSymm
   return __pyx_r;
 }
 
-/* "src/saxsfittool/fitfunction/c_bilayer.pyx":23
+/* "src/saxsfittool/fitfunction/c_bilayer.pyx":22
  *            FGaussianLayer(q, rhoguestout, rtail + deltarguestout, sigmaguestout)
  * 
- * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d,             # <<<<<<<<<<<<<<
+ * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d, double dd,             # <<<<<<<<<<<<<<
  *                                     double rhoguestin, double rhohead, double rhoguestout, double deltarguestin,
  *                                     double deltarhead, double deltarguestout, double sigmaguestin, double sigmahead,
  */
@@ -1439,6 +1445,7 @@ static PyObject *__pyx_pw_3src_11saxsfittool_11fitfunction_9c_bilayer_1F2FiveGau
   double __pyx_v_R;
   double __pyx_v_dR;
   double __pyx_v_d;
+  double __pyx_v_dd;
   double __pyx_v_rhoguestin;
   double __pyx_v_rhohead;
   double __pyx_v_rhoguestout;
@@ -1449,18 +1456,21 @@ static PyObject *__pyx_pw_3src_11saxsfittool_11fitfunction_9c_bilayer_1F2FiveGau
   double __pyx_v_sigmahead;
   double __pyx_v_sigmatail;
   double __pyx_v_sigmaguestout;
+  double __pyx_v_x_multilamellar;
   Py_ssize_t __pyx_v_Nbilayers;
   Py_ssize_t __pyx_v_NRdistrib;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("F2FiveGaussSymmetricHeadBilayer (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_q,&__pyx_n_s_R,&__pyx_n_s_dR,&__pyx_n_s_d,&__pyx_n_s_rhoguestin,&__pyx_n_s_rhohead,&__pyx_n_s_rhoguestout,&__pyx_n_s_deltarguestin,&__pyx_n_s_deltarhead,&__pyx_n_s_deltarguestout,&__pyx_n_s_sigmaguestin,&__pyx_n_s_sigmahead,&__pyx_n_s_sigmatail,&__pyx_n_s_sigmaguestout,&__pyx_n_s_Nbilayers,&__pyx_n_s_NRdistrib,0};
-    PyObject* values[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_q,&__pyx_n_s_R,&__pyx_n_s_dR,&__pyx_n_s_d,&__pyx_n_s_dd,&__pyx_n_s_rhoguestin,&__pyx_n_s_rhohead,&__pyx_n_s_rhoguestout,&__pyx_n_s_deltarguestin,&__pyx_n_s_deltarhead,&__pyx_n_s_deltarguestout,&__pyx_n_s_sigmaguestin,&__pyx_n_s_sigmahead,&__pyx_n_s_sigmatail,&__pyx_n_s_sigmaguestout,&__pyx_n_s_x_multilamellar,&__pyx_n_s_Nbilayers,&__pyx_n_s_NRdistrib,0};
+    PyObject* values[18] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 18: values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
+        case 17: values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
         case 16: values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
         case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
         case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
@@ -1488,87 +1498,99 @@ static PyObject *__pyx_pw_3src_11saxsfittool_11fitfunction_9c_bilayer_1F2FiveGau
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_R)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 1); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 1); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dR)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 2); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 2); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_d)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 3); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 3); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhoguestin)) != 0)) kw_args--;
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dd)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 4); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 4); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhohead)) != 0)) kw_args--;
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhoguestin)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 5); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 5); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  6:
-        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhoguestout)) != 0)) kw_args--;
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhohead)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 6); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 6); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  7:
-        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_deltarguestin)) != 0)) kw_args--;
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rhoguestout)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 7); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 7); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  8:
-        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_deltarhead)) != 0)) kw_args--;
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_deltarguestin)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 8); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 8); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case  9:
-        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_deltarguestout)) != 0)) kw_args--;
+        if (likely((values[9] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_deltarhead)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 9); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 9); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case 10:
-        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmaguestin)) != 0)) kw_args--;
+        if (likely((values[10] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_deltarguestout)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 10); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 10); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case 11:
-        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmahead)) != 0)) kw_args--;
+        if (likely((values[11] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmaguestin)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 11); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 11); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case 12:
-        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmatail)) != 0)) kw_args--;
+        if (likely((values[12] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmahead)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 12); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 12); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case 13:
-        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmaguestout)) != 0)) kw_args--;
+        if (likely((values[13] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmatail)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, 13); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 13); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case 14:
-        if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Nbilayers);
-          if (value) { values[14] = value; kw_args--; }
+        if (likely((values[14] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sigmaguestout)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, 14); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         case 15:
         if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_NRdistrib);
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_x_multilamellar);
           if (value) { values[15] = value; kw_args--; }
+        }
+        case 16:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_Nbilayers);
+          if (value) { values[16] = value; kw_args--; }
+        }
+        case 17:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_NRdistrib);
+          if (value) { values[17] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "F2FiveGaussSymmetricHeadBilayer") < 0)) __PYX_ERR(0, 23, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "F2FiveGaussSymmetricHeadBilayer") < 0)) __PYX_ERR(0, 22, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 18: values[17] = PyTuple_GET_ITEM(__pyx_args, 17);
+        case 17: values[16] = PyTuple_GET_ITEM(__pyx_args, 16);
         case 16: values[15] = PyTuple_GET_ITEM(__pyx_args, 15);
         case 15: values[14] = PyTuple_GET_ITEM(__pyx_args, 14);
-        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
         values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
         values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
@@ -1587,40 +1609,46 @@ static PyObject *__pyx_pw_3src_11saxsfittool_11fitfunction_9c_bilayer_1F2FiveGau
       }
     }
     __pyx_v_q = ((PyArrayObject *)values[0]);
-    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L3_error)
-    __pyx_v_dR = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_dR == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L3_error)
-    __pyx_v_d = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_d == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L3_error)
-    __pyx_v_rhoguestin = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_rhoguestin == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
-    __pyx_v_rhohead = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_rhohead == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
-    __pyx_v_rhoguestout = __pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_rhoguestout == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
-    __pyx_v_deltarguestin = __pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_deltarguestin == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
-    __pyx_v_deltarhead = __pyx_PyFloat_AsDouble(values[8]); if (unlikely((__pyx_v_deltarhead == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
-    __pyx_v_deltarguestout = __pyx_PyFloat_AsDouble(values[9]); if (unlikely((__pyx_v_deltarguestout == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
-    __pyx_v_sigmaguestin = __pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_sigmaguestin == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
-    __pyx_v_sigmahead = __pyx_PyFloat_AsDouble(values[11]); if (unlikely((__pyx_v_sigmahead == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
-    __pyx_v_sigmatail = __pyx_PyFloat_AsDouble(values[12]); if (unlikely((__pyx_v_sigmatail == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
-    __pyx_v_sigmaguestout = __pyx_PyFloat_AsDouble(values[13]); if (unlikely((__pyx_v_sigmaguestout == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
-    if (values[14]) {
-      __pyx_v_Nbilayers = __Pyx_PyIndex_AsSsize_t(values[14]); if (unlikely((__pyx_v_Nbilayers == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
-    } else {
-      __pyx_v_Nbilayers = ((Py_ssize_t)1);
-    }
+    __pyx_v_R = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_R == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
+    __pyx_v_dR = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_dR == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
+    __pyx_v_d = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_d == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
+    __pyx_v_dd = __pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_dd == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L3_error)
+    __pyx_v_rhoguestin = __pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_rhoguestin == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L3_error)
+    __pyx_v_rhohead = __pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_rhohead == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L3_error)
+    __pyx_v_rhoguestout = __pyx_PyFloat_AsDouble(values[7]); if (unlikely((__pyx_v_rhoguestout == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L3_error)
+    __pyx_v_deltarguestin = __pyx_PyFloat_AsDouble(values[8]); if (unlikely((__pyx_v_deltarguestin == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L3_error)
+    __pyx_v_deltarhead = __pyx_PyFloat_AsDouble(values[9]); if (unlikely((__pyx_v_deltarhead == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
+    __pyx_v_deltarguestout = __pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_deltarguestout == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
+    __pyx_v_sigmaguestin = __pyx_PyFloat_AsDouble(values[11]); if (unlikely((__pyx_v_sigmaguestin == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
+    __pyx_v_sigmahead = __pyx_PyFloat_AsDouble(values[12]); if (unlikely((__pyx_v_sigmahead == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L3_error)
+    __pyx_v_sigmatail = __pyx_PyFloat_AsDouble(values[13]); if (unlikely((__pyx_v_sigmatail == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
+    __pyx_v_sigmaguestout = __pyx_PyFloat_AsDouble(values[14]); if (unlikely((__pyx_v_sigmaguestout == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
     if (values[15]) {
-      __pyx_v_NRdistrib = __Pyx_PyIndex_AsSsize_t(values[15]); if (unlikely((__pyx_v_NRdistrib == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L3_error)
+      __pyx_v_x_multilamellar = __pyx_PyFloat_AsDouble(values[15]); if (unlikely((__pyx_v_x_multilamellar == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
+    } else {
+      __pyx_v_x_multilamellar = ((double)0.0);
+    }
+    if (values[16]) {
+      __pyx_v_Nbilayers = __Pyx_PyIndex_AsSsize_t(values[16]); if (unlikely((__pyx_v_Nbilayers == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 25, __pyx_L3_error)
+    } else {
+      __pyx_v_Nbilayers = ((Py_ssize_t)2);
+    }
+    if (values[17]) {
+      __pyx_v_NRdistrib = __Pyx_PyIndex_AsSsize_t(values[17]); if (unlikely((__pyx_v_NRdistrib == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L3_error)
     } else {
       __pyx_v_NRdistrib = ((Py_ssize_t)0x64);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 14, 16, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 23, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("F2FiveGaussSymmetricHeadBilayer", 0, 15, 18, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 22, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("src.saxsfittool.fitfunction.c_bilayer.F2FiveGaussSymmetricHeadBilayer", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_q), __pyx_ptype_5numpy_ndarray, 0, "q", 0))) __PYX_ERR(0, 23, __pyx_L1_error)
-  __pyx_r = __pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaussSymmetricHeadBilayer(__pyx_self, __pyx_v_q, __pyx_v_R, __pyx_v_dR, __pyx_v_d, __pyx_v_rhoguestin, __pyx_v_rhohead, __pyx_v_rhoguestout, __pyx_v_deltarguestin, __pyx_v_deltarhead, __pyx_v_deltarguestout, __pyx_v_sigmaguestin, __pyx_v_sigmahead, __pyx_v_sigmatail, __pyx_v_sigmaguestout, __pyx_v_Nbilayers, __pyx_v_NRdistrib);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_q), __pyx_ptype_5numpy_ndarray, 0, "q", 0))) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_r = __pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaussSymmetricHeadBilayer(__pyx_self, __pyx_v_q, __pyx_v_R, __pyx_v_dR, __pyx_v_d, __pyx_v_dd, __pyx_v_rhoguestin, __pyx_v_rhohead, __pyx_v_rhoguestout, __pyx_v_deltarguestin, __pyx_v_deltarhead, __pyx_v_deltarguestout, __pyx_v_sigmaguestin, __pyx_v_sigmahead, __pyx_v_sigmatail, __pyx_v_sigmaguestout, __pyx_v_x_multilamellar, __pyx_v_Nbilayers, __pyx_v_NRdistrib);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1631,7 +1659,7 @@ static PyObject *__pyx_pw_3src_11saxsfittool_11fitfunction_9c_bilayer_1F2FiveGau
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaussSymmetricHeadBilayer(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_q, double __pyx_v_R, double __pyx_v_dR, double __pyx_v_d, double __pyx_v_rhoguestin, double __pyx_v_rhohead, double __pyx_v_rhoguestout, double __pyx_v_deltarguestin, double __pyx_v_deltarhead, double __pyx_v_deltarguestout, double __pyx_v_sigmaguestin, double __pyx_v_sigmahead, double __pyx_v_sigmatail, double __pyx_v_sigmaguestout, Py_ssize_t __pyx_v_Nbilayers, Py_ssize_t __pyx_v_NRdistrib) {
+static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaussSymmetricHeadBilayer(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_q, double __pyx_v_R, double __pyx_v_dR, double __pyx_v_d, double __pyx_v_dd, double __pyx_v_rhoguestin, double __pyx_v_rhohead, double __pyx_v_rhoguestout, double __pyx_v_deltarguestin, double __pyx_v_deltarhead, double __pyx_v_deltarguestout, double __pyx_v_sigmaguestin, double __pyx_v_sigmahead, double __pyx_v_sigmatail, double __pyx_v_sigmaguestout, double __pyx_v_x_multilamellar, Py_ssize_t __pyx_v_Nbilayers, Py_ssize_t __pyx_v_NRdistrib) {
   PyObject *__pyx_v_out = NULL;
   PyArrayMultiIterObject *__pyx_v_it = 0;
   double __pyx_v_q_;
@@ -1639,7 +1667,7 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
   double __pyx_v_r;
   double __pyx_v_sumweight;
   double __pyx_v_intensity_singleobject;
-  Py_ssize_t __pyx_v_i;
+  double __pyx_v_structfac;
   Py_ssize_t __pyx_v_j;
   double __pyx_v_w;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_q;
@@ -1657,8 +1685,6 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
   Py_ssize_t __pyx_t_9;
   double __pyx_t_10;
   double __pyx_t_11;
-  Py_ssize_t __pyx_t_12;
-  Py_ssize_t __pyx_t_13;
   __Pyx_RefNannySetupContext("F2FiveGaussSymmetricHeadBilayer", 0);
   __pyx_pybuffer_q.pybuffer.buf = NULL;
   __pyx_pybuffer_q.refcount = 0;
@@ -1666,28 +1692,28 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
   __pyx_pybuffernd_q.rcbuffer = &__pyx_pybuffer_q;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_q.rcbuffer->pybuffer, (PyObject*)__pyx_v_q, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 23, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_q.rcbuffer->pybuffer, (PyObject*)__pyx_v_q, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 22, __pyx_L1_error)
   }
   __pyx_pybuffernd_q.diminfo[0].strides = __pyx_pybuffernd_q.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_q.diminfo[0].shape = __pyx_pybuffernd_q.rcbuffer->pybuffer.shape[0];
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":28
- *                                     double sigmatail, double sigmaguestout, Py_ssize_t Nbilayers=1,
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":27
+ *                                     double sigmatail, double sigmaguestout, double x_multilamellar=0, Py_ssize_t Nbilayers=2,
  *                                     Py_ssize_t NRdistrib=100):
  *     out = np.empty(len(q), np.double)             # <<<<<<<<<<<<<<
  *     cdef np.broadcast it = np.broadcast(q, out)
- *     cdef double q_, intensity_averaged, r, weight, sumweight, intensity_singleobject
+ *     cdef double q_, intensity_averaged, r, weight, sumweight, intensity_singleobject, structfac
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = PyObject_Length(((PyObject *)__pyx_v_q)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 28, __pyx_L1_error)
-  __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Length(((PyObject *)__pyx_v_q)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_double); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_double); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -1702,7 +1728,7 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
       __pyx_t_4 = 1;
     }
   }
-  __pyx_t_7 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (__pyx_t_5) {
     __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -1713,21 +1739,21 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
   PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_4, __pyx_t_6);
   __pyx_t_2 = 0;
   __pyx_t_6 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_out = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":29
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":28
  *                                     Py_ssize_t NRdistrib=100):
  *     out = np.empty(len(q), np.double)
  *     cdef np.broadcast it = np.broadcast(q, out)             # <<<<<<<<<<<<<<
- *     cdef double q_, intensity_averaged, r, weight, sumweight, intensity_singleobject
+ *     cdef double q_, intensity_averaged, r, weight, sumweight, intensity_singleobject, structfac
  *     cdef Py_ssize_t i, j
  */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_q));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_q));
@@ -1735,14 +1761,14 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
   __Pyx_INCREF(__pyx_v_out);
   __Pyx_GIVEREF(__pyx_v_out);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_out);
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5numpy_broadcast), __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5numpy_broadcast), __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_it = ((PyArrayMultiIterObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":32
- *     cdef double q_, intensity_averaged, r, weight, sumweight, intensity_singleobject
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":31
+ *     cdef double q_, intensity_averaged, r, weight, sumweight, intensity_singleobject, structfac
  *     cdef Py_ssize_t i, j
  *     while np.PyArray_MultiIter_NOTDONE(it):             # <<<<<<<<<<<<<<
  *         q_ = (<double*> np.PyArray_MultiIter_DATA(it, 0))[0]
@@ -1752,7 +1778,7 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
     __pyx_t_8 = (PyArray_MultiIter_NOTDONE(__pyx_v_it) != 0);
     if (!__pyx_t_8) break;
 
-    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":33
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":32
  *     cdef Py_ssize_t i, j
  *     while np.PyArray_MultiIter_NOTDONE(it):
  *         q_ = (<double*> np.PyArray_MultiIter_DATA(it, 0))[0]             # <<<<<<<<<<<<<<
@@ -1761,27 +1787,66 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
  */
     __pyx_v_q_ = (((double *)PyArray_MultiIter_DATA(__pyx_v_it, 0))[0]);
 
-    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":34
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":33
  *     while np.PyArray_MultiIter_NOTDONE(it):
  *         q_ = (<double*> np.PyArray_MultiIter_DATA(it, 0))[0]
  *         intensity_averaged = 0             # <<<<<<<<<<<<<<
  *         sumweight=0
- *         for j in range(NRdistrib):
+ *         structfac = 0
  */
     __pyx_v_intensity_averaged = 0.0;
 
-    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":35
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":34
  *         q_ = (<double*> np.PyArray_MultiIter_DATA(it, 0))[0]
  *         intensity_averaged = 0
  *         sumweight=0             # <<<<<<<<<<<<<<
- *         for j in range(NRdistrib):
- *             r = R - dR * 3 + (j / (NRdistrib - 1.0)) * 6*dR
+ *         structfac = 0
+ *         for j in range(Nbilayers):
  */
     __pyx_v_sumweight = 0.0;
 
-    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":36
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":35
  *         intensity_averaged = 0
  *         sumweight=0
+ *         structfac = 0             # <<<<<<<<<<<<<<
+ *         for j in range(Nbilayers):
+ *             structfac += (Nbilayers-j)*cos(j*q_*d)*exp(-j*j*q_*q_*dd*dd/2)
+ */
+    __pyx_v_structfac = 0.0;
+
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":36
+ *         sumweight=0
+ *         structfac = 0
+ *         for j in range(Nbilayers):             # <<<<<<<<<<<<<<
+ *             structfac += (Nbilayers-j)*cos(j*q_*d)*exp(-j*j*q_*q_*dd*dd/2)
+ *         structfac = Nbilayers + structfac*2
+ */
+    __pyx_t_4 = __pyx_v_Nbilayers;
+    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_4; __pyx_t_9+=1) {
+      __pyx_v_j = __pyx_t_9;
+
+      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":37
+ *         structfac = 0
+ *         for j in range(Nbilayers):
+ *             structfac += (Nbilayers-j)*cos(j*q_*d)*exp(-j*j*q_*q_*dd*dd/2)             # <<<<<<<<<<<<<<
+ *         structfac = Nbilayers + structfac*2
+ *         for j in range(NRdistrib):
+ */
+      __pyx_v_structfac = (__pyx_v_structfac + (((__pyx_v_Nbilayers - __pyx_v_j) * cos(((__pyx_v_j * __pyx_v_q_) * __pyx_v_d))) * exp((((((((-__pyx_v_j) * __pyx_v_j) * __pyx_v_q_) * __pyx_v_q_) * __pyx_v_dd) * __pyx_v_dd) / 2.0))));
+    }
+
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":38
+ *         for j in range(Nbilayers):
+ *             structfac += (Nbilayers-j)*cos(j*q_*d)*exp(-j*j*q_*q_*dd*dd/2)
+ *         structfac = Nbilayers + structfac*2             # <<<<<<<<<<<<<<
+ *         for j in range(NRdistrib):
+ *             r = R - dR * 3 + (j / (NRdistrib - 1.0)) * 6*dR
+ */
+    __pyx_v_structfac = (__pyx_v_Nbilayers + (__pyx_v_structfac * 2.0));
+
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":39
+ *             structfac += (Nbilayers-j)*cos(j*q_*d)*exp(-j*j*q_*q_*dd*dd/2)
+ *         structfac = Nbilayers + structfac*2
  *         for j in range(NRdistrib):             # <<<<<<<<<<<<<<
  *             r = R - dR * 3 + (j / (NRdistrib - 1.0)) * 6*dR
  *             w = exp(-(r - R) * (r - R) / (2 * dR * dR))
@@ -1790,8 +1855,8 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
     for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_4; __pyx_t_9+=1) {
       __pyx_v_j = __pyx_t_9;
 
-      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":37
- *         sumweight=0
+      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":40
+ *         structfac = Nbilayers + structfac*2
  *         for j in range(NRdistrib):
  *             r = R - dR * 3 + (j / (NRdistrib - 1.0)) * 6*dR             # <<<<<<<<<<<<<<
  *             w = exp(-(r - R) * (r - R) / (2 * dR * dR))
@@ -1800,67 +1865,46 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
       __pyx_t_10 = (__pyx_v_NRdistrib - 1.0);
       if (unlikely(__pyx_t_10 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 37, __pyx_L1_error)
+        __PYX_ERR(0, 40, __pyx_L1_error)
       }
       __pyx_v_r = ((__pyx_v_R - (__pyx_v_dR * 3.0)) + (((__pyx_v_j / __pyx_t_10) * 6.0) * __pyx_v_dR));
 
-      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":38
+      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":41
  *         for j in range(NRdistrib):
  *             r = R - dR * 3 + (j / (NRdistrib - 1.0)) * 6*dR
  *             w = exp(-(r - R) * (r - R) / (2 * dR * dR))             # <<<<<<<<<<<<<<
  *             sumweight+=w
- *             intensity_singleobject=0
+ *             intensity_singleobject = FFiveGaussSymmetricHeadBilayer(
  */
       __pyx_t_10 = ((-(__pyx_v_r - __pyx_v_R)) * (__pyx_v_r - __pyx_v_R));
       __pyx_t_11 = ((2.0 * __pyx_v_dR) * __pyx_v_dR);
       if (unlikely(__pyx_t_11 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        __PYX_ERR(0, 38, __pyx_L1_error)
+        __PYX_ERR(0, 41, __pyx_L1_error)
       }
       __pyx_v_w = exp((__pyx_t_10 / __pyx_t_11));
 
-      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":39
+      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":42
  *             r = R - dR * 3 + (j / (NRdistrib - 1.0)) * 6*dR
  *             w = exp(-(r - R) * (r - R) / (2 * dR * dR))
  *             sumweight+=w             # <<<<<<<<<<<<<<
- *             intensity_singleobject=0
- *             for i in range(Nbilayers):
+ *             intensity_singleobject = FFiveGaussSymmetricHeadBilayer(
+ *                     q_, r, rhoguestin, rhohead, rhoguestout, deltarguestin,
  */
       __pyx_v_sumweight = (__pyx_v_sumweight + __pyx_v_w);
 
-      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":40
- *             w = exp(-(r - R) * (r - R) / (2 * dR * dR))
- *             sumweight+=w
- *             intensity_singleobject=0             # <<<<<<<<<<<<<<
- *             for i in range(Nbilayers):
- *                 intensity_singleobject += FFiveGaussSymmetricHeadBilayer(
- */
-      __pyx_v_intensity_singleobject = 0.0;
-
-      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":41
- *             sumweight+=w
- *             intensity_singleobject=0
- *             for i in range(Nbilayers):             # <<<<<<<<<<<<<<
- *                 intensity_singleobject += FFiveGaussSymmetricHeadBilayer(
- *                     q_, r + d * i, rhoguestin, rhohead, rhoguestout, deltarguestin,
- */
-      __pyx_t_12 = __pyx_v_Nbilayers;
-      for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-        __pyx_v_i = __pyx_t_13;
-
-        /* "src/saxsfittool/fitfunction/c_bilayer.pyx":42
- *             intensity_singleobject=0
- *             for i in range(Nbilayers):
- *                 intensity_singleobject += FFiveGaussSymmetricHeadBilayer(             # <<<<<<<<<<<<<<
- *                     q_, r + d * i, rhoguestin, rhohead, rhoguestout, deltarguestin,
- *                     deltarhead, deltarguestout, sigmaguestin, sigmahead, sigmatail,
- */
-        __pyx_v_intensity_singleobject = (__pyx_v_intensity_singleobject + __pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FFiveGaussSymmetricHeadBilayer(__pyx_v_q_, (__pyx_v_r + (__pyx_v_d * __pyx_v_i)), __pyx_v_rhoguestin, __pyx_v_rhohead, __pyx_v_rhoguestout, __pyx_v_deltarguestin, __pyx_v_deltarhead, __pyx_v_deltarguestout, __pyx_v_sigmaguestin, __pyx_v_sigmahead, __pyx_v_sigmatail, __pyx_v_sigmaguestout));
-      }
-
       /* "src/saxsfittool/fitfunction/c_bilayer.pyx":46
+ *                     q_, r, rhoguestin, rhohead, rhoguestout, deltarguestin,
  *                     deltarhead, deltarguestout, sigmaguestin, sigmahead, sigmatail,
- *                     sigmaguestout)
+ *                     sigmaguestout) * (x_multilamellar*structfac+(1-x_multilamellar))             # <<<<<<<<<<<<<<
+ *             intensity_averaged += w*intensity_singleobject**2
+ *         (<double*> np.PyArray_MultiIter_DATA(it, 1))[0] = intensity_averaged/sumweight
+ */
+      __pyx_v_intensity_singleobject = (__pyx_f_3src_11saxsfittool_11fitfunction_9c_bilayer_FFiveGaussSymmetricHeadBilayer(__pyx_v_q_, __pyx_v_r, __pyx_v_rhoguestin, __pyx_v_rhohead, __pyx_v_rhoguestout, __pyx_v_deltarguestin, __pyx_v_deltarhead, __pyx_v_deltarguestout, __pyx_v_sigmaguestin, __pyx_v_sigmahead, __pyx_v_sigmatail, __pyx_v_sigmaguestout) * ((__pyx_v_x_multilamellar * __pyx_v_structfac) + (1.0 - __pyx_v_x_multilamellar)));
+
+      /* "src/saxsfittool/fitfunction/c_bilayer.pyx":47
+ *                     deltarhead, deltarguestout, sigmaguestin, sigmahead, sigmatail,
+ *                     sigmaguestout) * (x_multilamellar*structfac+(1-x_multilamellar))
  *             intensity_averaged += w*intensity_singleobject**2             # <<<<<<<<<<<<<<
  *         (<double*> np.PyArray_MultiIter_DATA(it, 1))[0] = intensity_averaged/sumweight
  *         np.PyArray_MultiIter_NEXT(it)
@@ -1868,8 +1912,8 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
       __pyx_v_intensity_averaged = (__pyx_v_intensity_averaged + (__pyx_v_w * pow(__pyx_v_intensity_singleobject, 2.0)));
     }
 
-    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":47
- *                     sigmaguestout)
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":48
+ *                     sigmaguestout) * (x_multilamellar*structfac+(1-x_multilamellar))
  *             intensity_averaged += w*intensity_singleobject**2
  *         (<double*> np.PyArray_MultiIter_DATA(it, 1))[0] = intensity_averaged/sumweight             # <<<<<<<<<<<<<<
  *         np.PyArray_MultiIter_NEXT(it)
@@ -1877,33 +1921,35 @@ static PyObject *__pyx_pf_3src_11saxsfittool_11fitfunction_9c_bilayer_F2FiveGaus
  */
     if (unlikely(__pyx_v_sumweight == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      __PYX_ERR(0, 47, __pyx_L1_error)
+      __PYX_ERR(0, 48, __pyx_L1_error)
     }
     (((double *)PyArray_MultiIter_DATA(__pyx_v_it, 1))[0]) = (__pyx_v_intensity_averaged / __pyx_v_sumweight);
 
-    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":48
+    /* "src/saxsfittool/fitfunction/c_bilayer.pyx":49
  *             intensity_averaged += w*intensity_singleobject**2
  *         (<double*> np.PyArray_MultiIter_DATA(it, 1))[0] = intensity_averaged/sumweight
  *         np.PyArray_MultiIter_NEXT(it)             # <<<<<<<<<<<<<<
  *     return out
+ * 
  */
     PyArray_MultiIter_NEXT(__pyx_v_it);
   }
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":49
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":50
  *         (<double*> np.PyArray_MultiIter_DATA(it, 1))[0] = intensity_averaged/sumweight
  *         np.PyArray_MultiIter_NEXT(it)
  *     return out             # <<<<<<<<<<<<<<
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_out);
   __pyx_r = __pyx_v_out;
   goto __pyx_L0;
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":23
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":22
  *            FGaussianLayer(q, rhoguestout, rtail + deltarguestout, sigmaguestout)
  * 
- * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d,             # <<<<<<<<<<<<<<
+ * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d, double dd,             # <<<<<<<<<<<<<<
  *                                     double rhoguestin, double rhohead, double rhoguestout, double deltarguestin,
  *                                     double deltarhead, double deltarguestout, double sigmaguestin, double sigmahead,
  */
@@ -4091,6 +4137,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_d, __pyx_k_d, sizeof(__pyx_k_d), 0, 0, 1, 1},
   {&__pyx_n_s_dR, __pyx_k_dR, sizeof(__pyx_k_dR), 0, 0, 1, 1},
+  {&__pyx_n_s_dd, __pyx_k_dd, sizeof(__pyx_k_dd), 0, 0, 1, 1},
   {&__pyx_n_s_deltarguestin, __pyx_k_deltarguestin, sizeof(__pyx_k_deltarguestin), 0, 0, 1, 1},
   {&__pyx_n_s_deltarguestout, __pyx_k_deltarguestout, sizeof(__pyx_k_deltarguestout), 0, 0, 1, 1},
   {&__pyx_n_s_deltarhead, __pyx_k_deltarhead, sizeof(__pyx_k_deltarhead), 0, 0, 1, 1},
@@ -4121,11 +4168,13 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_sigmahead, __pyx_k_sigmahead, sizeof(__pyx_k_sigmahead), 0, 0, 1, 1},
   {&__pyx_n_s_sigmatail, __pyx_k_sigmatail, sizeof(__pyx_k_sigmatail), 0, 0, 1, 1},
   {&__pyx_n_s_src_saxsfittool_fitfunction_c_bi, __pyx_k_src_saxsfittool_fitfunction_c_bi, sizeof(__pyx_k_src_saxsfittool_fitfunction_c_bi), 0, 0, 1, 1},
+  {&__pyx_n_s_structfac, __pyx_k_structfac, sizeof(__pyx_k_structfac), 0, 0, 1, 1},
   {&__pyx_n_s_sumweight, __pyx_k_sumweight, sizeof(__pyx_k_sumweight), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
   {&__pyx_n_s_w, __pyx_k_w, sizeof(__pyx_k_w), 0, 0, 1, 1},
   {&__pyx_n_s_weight, __pyx_k_weight, sizeof(__pyx_k_weight), 0, 0, 1, 1},
+  {&__pyx_n_s_x_multilamellar, __pyx_k_x_multilamellar, sizeof(__pyx_k_x_multilamellar), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
@@ -4207,17 +4256,17 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":23
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":22
  *            FGaussianLayer(q, rhoguestout, rtail + deltarguestout, sigmaguestout)
  * 
- * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d,             # <<<<<<<<<<<<<<
+ * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d, double dd,             # <<<<<<<<<<<<<<
  *                                     double rhoguestin, double rhohead, double rhoguestout, double deltarguestin,
  *                                     double deltarhead, double deltarguestout, double sigmaguestin, double sigmahead,
  */
-  __pyx_tuple__7 = PyTuple_Pack(27, __pyx_n_s_q, __pyx_n_s_R, __pyx_n_s_dR, __pyx_n_s_d, __pyx_n_s_rhoguestin, __pyx_n_s_rhohead, __pyx_n_s_rhoguestout, __pyx_n_s_deltarguestin, __pyx_n_s_deltarhead, __pyx_n_s_deltarguestout, __pyx_n_s_sigmaguestin, __pyx_n_s_sigmahead, __pyx_n_s_sigmatail, __pyx_n_s_sigmaguestout, __pyx_n_s_Nbilayers, __pyx_n_s_NRdistrib, __pyx_n_s_out, __pyx_n_s_it, __pyx_n_s_q_2, __pyx_n_s_intensity_averaged, __pyx_n_s_r, __pyx_n_s_weight, __pyx_n_s_sumweight, __pyx_n_s_intensity_singleobject, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_w); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(30, __pyx_n_s_q, __pyx_n_s_R, __pyx_n_s_dR, __pyx_n_s_d, __pyx_n_s_dd, __pyx_n_s_rhoguestin, __pyx_n_s_rhohead, __pyx_n_s_rhoguestout, __pyx_n_s_deltarguestin, __pyx_n_s_deltarhead, __pyx_n_s_deltarguestout, __pyx_n_s_sigmaguestin, __pyx_n_s_sigmahead, __pyx_n_s_sigmatail, __pyx_n_s_sigmaguestout, __pyx_n_s_x_multilamellar, __pyx_n_s_Nbilayers, __pyx_n_s_NRdistrib, __pyx_n_s_out, __pyx_n_s_it, __pyx_n_s_q_2, __pyx_n_s_intensity_averaged, __pyx_n_s_r, __pyx_n_s_weight, __pyx_n_s_sumweight, __pyx_n_s_intensity_singleobject, __pyx_n_s_structfac, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_w); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(16, 0, 27, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_wachaandras_PycharmProject, __pyx_n_s_F2FiveGaussSymmetricHeadBilayer, 23, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(18, 0, 30, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_wachaandras_PycharmProject, __pyx_n_s_F2FiveGaussSymmetricHeadBilayer, 22, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4350,21 +4399,21 @@ PyMODINIT_FUNC PyInit_c_bilayer(void)
  * from libc.math cimport exp, sin, cos
  * 
  * np.import_array()             # <<<<<<<<<<<<<<
- * 
  * cdef double FGaussianLayer(double q, double rho, double r, double sigma):
+ *     """Scattering form factor amplitude of a radial Gaussian electron density
  */
   import_array();
 
-  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":23
+  /* "src/saxsfittool/fitfunction/c_bilayer.pyx":22
  *            FGaussianLayer(q, rhoguestout, rtail + deltarguestout, sigmaguestout)
  * 
- * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d,             # <<<<<<<<<<<<<<
+ * def F2FiveGaussSymmetricHeadBilayer(np.ndarray[np.double_t, ndim=1] q not None, double R, double dR, double d, double dd,             # <<<<<<<<<<<<<<
  *                                     double rhoguestin, double rhohead, double rhoguestout, double deltarguestin,
  *                                     double deltarhead, double deltarguestout, double sigmaguestin, double sigmahead,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3src_11saxsfittool_11fitfunction_9c_bilayer_1F2FiveGaussSymmetricHeadBilayer, NULL, __pyx_n_s_src_saxsfittool_fitfunction_c_bi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3src_11saxsfittool_11fitfunction_9c_bilayer_1F2FiveGaussSymmetricHeadBilayer, NULL, __pyx_n_s_src_saxsfittool_fitfunction_c_bi); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_F2FiveGaussSymmetricHeadBilayer, __pyx_t_1) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_F2FiveGaussSymmetricHeadBilayer, __pyx_t_1) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "src/saxsfittool/fitfunction/c_bilayer.pyx":1
