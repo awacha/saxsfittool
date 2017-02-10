@@ -303,6 +303,13 @@ zoom</string>
           </layout>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="exportResultsPushButton">
+          <property name="text">
+           <string>Export parameters and results...</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QTabWidget" name="tabWidget">

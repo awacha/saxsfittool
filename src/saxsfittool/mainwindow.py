@@ -1,4 +1,5 @@
 import logging
+import pickle
 import sys
 import textwrap
 from concurrent.futures import ProcessPoolExecutor, Future
@@ -401,7 +402,24 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.statisticsModel = QtGui.QStandardItemModel(0, 2)
         Form.statisticsModel.setHorizontalHeaderLabels(['Parameter', 'Value'])
         Form.statisticsTreeView.setModel(Form.statisticsModel)
+        Form.exportResultsPushButton.clicked.connect(Form.exportResults)
         Form.rePlot()
+
+    def exportResults(self):
+        results = {}
+        params = self.parametersModel.parameters
+        results['params'] = params
+        try:
+            results['stats'] = self.laststats
+        except AttributeError:
+            pass
+        filename, filter = QtWidgets.QFileDialog.getSaveFileName(self,
+                                                                 "Select file to save parameter & results pickle to...",
+                                                                 '', filter='*.pickle')
+        if filename:
+            with open(filename, 'wb') as f:
+                pickle.dump(results, f)
+        logger.info('Results saved to file {}'.format(filename))
 
 
     def fitFunctionSelected(self):
@@ -700,6 +718,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                                                                          [arg[0] for arg in func.arguments]))
             self.parametersModel.update_active_mask(stats['active_mask'])
             self.rePlotModel()
+            self.laststats = stats
         finally:
             self._fit_future = None
             self.fittingProgressBar.hide()
