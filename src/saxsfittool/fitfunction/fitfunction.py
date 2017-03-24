@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib.figure import Figure
 
 from .c_bilayer import F2FiveGaussSymmetricHeadBilayer
-from .c_ellipsoid import F2EllipsoidalShell
+from .c_ellipsoid import F2EllipsoidalShell, F2AsymmetricEllipsoidalShell
 from .c_spheredistrib import F2GaussianSphereDistribution
 
 
@@ -93,6 +93,24 @@ class F2CoreShellEllipsoid(FitFunction):
     def function(self, x, eta_core, eta_shell, eta_solvent, a, b, t):
         return F2EllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, t)
 
+class F2AsymmetricCoreShellEllipsoid(FitFunction):
+    name = 'Rotational core-shell ellipsoid with asymmetric shell'
+
+    arguments = [('eta_core', 'SLD of the core'),
+                 ('eta_shell', 'SLD of the shell'),
+                 ('eta_solvent', 'SLD of the solvent'),
+                 ('a', 'Principal semi-axis of the core'),
+                 ('b', 'Equatorial semi-axis of the core'),
+                 ('ta', 'Shell thickness (along the principal axis)'),
+                 ('tb', 'Shell thickness (along the equatorial axes)'),
+                 ]
+
+    description = "Scattering intensity of a rotational core-shell ellipsoid"
+
+    def function(self, x, eta_core, eta_shell, eta_solvent, a, b, ta, tb):
+        return F2AsymmetricEllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, ta, tb)
+
+
 class F2CoreShellEllipsoidWithBackground(FitFunction):
     name = 'Rotational core-shell ellipsoid + constant background'
 
@@ -108,6 +126,23 @@ class F2CoreShellEllipsoidWithBackground(FitFunction):
 
     def function(self, x, eta_core, eta_shell, eta_solvent, a, b, t, C):
         return F2EllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, t) + C
+
+class F2AsymmetricCoreShellEllipsoidWithBackground(FitFunction):
+    name = 'Rotational core-shell ellipsoid + constant background'
+
+    arguments = [('eta_core', 'SLD of the core'),
+                 ('eta_shell', 'SLD of the shell'),
+                 ('eta_solvent', 'SLD of the solvent'),
+                 ('a', 'Principal semi-axis of the core'),
+                 ('b', 'Equatorial semi-axis of the core'),
+                 ('ta', 'Shell thickness (along the principal axis)'),
+                 ('tb', 'Shell thickness (along the equatorial axes)'),
+                 ('bg', 'Constant background')]
+
+    description = "Scattering intensity of a rotational core-shell ellipsoid with additional constant background"
+
+    def function(self, x, eta_core, eta_shell, eta_solvent, a, b, ta, tb, C):
+        return F2AsymmetricEllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, ta, tb) + C
 
 
 class Gaussian(FitFunction):
