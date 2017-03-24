@@ -217,5 +217,5 @@ def F2AsymmetricEllipsoidalShell_scalar(double q, double etacore, double etashel
         double out=0
     for i in range(0, Nmu):
         mu=1/(Nmu)*(i+1)
-        out += FEllipsoidalShell_oriented_scalar(q, etacore, etashell, etasolvent, a, b, ta, tb, mu)**2
+        out += FAsymmetricEllipsoidalShell_oriented_scalar(q, etacore, etashell, etasolvent, a, b, ta, tb, mu)**2
     return out/Nmu
