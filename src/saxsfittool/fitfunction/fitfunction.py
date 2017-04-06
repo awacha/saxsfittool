@@ -105,7 +105,7 @@ class F2AsymmetricCoreShellEllipsoid(FitFunction):
                  ('tb', 'Shell thickness (along the equatorial axes)'),
                  ]
 
-    description = "Scattering intensity of a rotational core-shell ellipsoid"
+    description = "Scattering intensity of an asymmetric rotational core-shell ellipsoid"
 
     def function(self, x, eta_core, eta_shell, eta_solvent, a, b, ta, tb):
         return F2AsymmetricEllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, ta, tb)
@@ -128,7 +128,7 @@ class F2CoreShellEllipsoidWithBackground(FitFunction):
         return F2EllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, t) + C
 
 class F2AsymmetricCoreShellEllipsoidWithBackground(FitFunction):
-    name = 'Rotational core-shell ellipsoid + constant background'
+    name = 'Rotational core-shell ellipsoid with asymmetric shell + constant background'
 
     arguments = [('eta_core', 'SLD of the core'),
                  ('eta_shell', 'SLD of the shell'),
@@ -139,7 +139,7 @@ class F2AsymmetricCoreShellEllipsoidWithBackground(FitFunction):
                  ('tb', 'Shell thickness (along the equatorial axes)'),
                  ('bg', 'Constant background')]
 
-    description = "Scattering intensity of a rotational core-shell ellipsoid with additional constant background"
+    description = "Scattering intensity of an asymmetric rotational core-shell ellipsoid with additional constant background"
 
     def function(self, x, eta_core, eta_shell, eta_solvent, a, b, ta, tb, C):
         return F2AsymmetricEllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, ta, tb) + C

@@ -1,4 +1,5 @@
 import logging
+import os
 import pickle
 import sys
 import textwrap
@@ -6,6 +7,7 @@ from concurrent.futures import ProcessPoolExecutor, Future
 
 import matplotlib.cm
 import numpy as np
+import pkg_resources
 from PyQt5 import QtWidgets, QtGui, QtCore
 from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
@@ -280,7 +282,7 @@ class FitParametersModel(QtCore.QAbstractItemModel):
                 par['lowerbound'] = 0
             else:
                 par['lowerbound_enabled'] = True
-                par['lowerbouund'] = low
+                par['lowerbound'] = low
             if up is None or up == np.nan:
                 par['upperbound_enabled'] = False
                 par['upperbound'] = 0
@@ -404,6 +406,41 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.statisticsTreeView.setModel(Form.statisticsModel)
         Form.exportResultsPushButton.clicked.connect(Form.exportResults)
         Form.rePlot()
+        Form.loadParametersPushButton.clicked.connect(Form.loadParameters)
+        Form.setWindowTitle('SAXSFitTool v{} :: no file loaded yet'.format(pkg_resources.get_distribution('saxsfittool').version))
+
+    def loadParameters(self):
+        filename, filter = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Select file to load parameters from...",
+            '', filter='*.pickle',
+        )
+        if not filename:
+            return
+        try:
+            errormessage = 'Cannot open file'
+            with open(filename, 'rb') as f:
+                errormessage = 'Cannot unpickle file'
+                data = pickle.load(f)
+            errormessage = 'Malformed saxsfittool results file'
+            params=data['params']
+            currentparams = self.parametersModel.parameters
+            errormessage = 'The parameter file you selected is incompatible with the current model function.'
+            if not all ([p['name']==pc['name'] for p,pc in zip(params, currentparams)]):
+                raise ValueError(errormessage)
+            errormessage = 'Cannot get all parameter values from the file'
+            values = [p['value'] for p in params]
+            errormessage = 'Cannot get all parameter uncertainties from the file'
+            uncertainties = [p['uncertainty'] for p in params]
+            errormessage = 'Cannot get all parameter lower bounds from the file'
+            lower = [p['lowerbound'] for p in params]
+            errormessage = 'Cannot get all parameter upper bounds from the file'
+            upper = [p['upperbound'] for p in params]
+            self.parametersModel.update_parameters(values, uncertainties)
+            self.parametersModel.update_limits(lower, upper)
+            errormessage = 'Cannot get all parameter active masks from the file'
+            self.parametersModel.update_active_mask([p['enbled'] for p in params])
+        except Exception as exc:
+            QtWidgets.QMessageBox.critical(self, 'Error while loading file', errormessage)
 
     def exportResults(self):
         results = {}
@@ -413,9 +450,11 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             results['stats'] = self.laststats
         except AttributeError:
             pass
-        filename, filter = QtWidgets.QFileDialog.getSaveFileName(self,
-                                                                 "Select file to save parameter & results pickle to...",
-                                                                 '', filter='*.pickle')
+
+        filename, filter = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "Select file to save parameter & results pickle to...",
+            os.path.splitext(self.windowFilePath())[0]+'.pickle', filter='*.pickle')
         if filename:
             with open(filename, 'wb') as f:
                 pickle.dump(results, f)
@@ -461,6 +500,12 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         try:
             self.dataset = np.loadtxt(filename)
             self.dataset = self.dataset[np.isfinite(self.dataset.sum(axis=1)), :]
+            self.pathLabel.setText(os.path.split(filename)[0])
+            self.filenameLabel.setText(os.path.split(filename)[1])
+            self.setWindowFilePath(filename)
+            self.setWindowTitle('SAXSFitTool v{} :: {}'.format(
+                pkg_resources.get_distribution('saxsfittool').version,
+                filename))
         except Exception as exc:
             QtWidgets.QMessageBox.critical(self, 'Error while opening file', str(exc),
                                            QtWidgets.QMessageBox.Close, QtWidgets.QMessageBox.NoButton)

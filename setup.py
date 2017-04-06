@@ -18,16 +18,16 @@ except ImportError:
 # needed. On Linux, the headers are already in standard places.
 incdirs = list(set([get_python_lib(0, 0), get_python_lib(0, 1), get_python_lib(1, 0),
                   get_python_lib(1, 1), get_python_inc(0), get_python_inc(1)]))
-npy_incdirs = [os.path.join(x, 'numpy/core/include') for x in incdirs]
+npy_incdirs = [os.path.join(x, 'numpy','core','include') for x in incdirs]
 incdirs.extend(npy_incdirs)
 
 # Extension modules written in Cython
 
 pyxfiles = []
-for dir_, subdirs, files in os.walk('src/saxsfittool'):
+for dir_, subdirs, files in os.walk(os.path.join('src','saxsfittool')):
     pyxfiles.extend([os.path.join(dir_, f) for f in files if f.endswith('.pyx')])
 
-ext_modules = cythonize([Extension(p.replace('/', '.')[:-4].split('.',1)[1], [p], include_dirs=incdirs) for p in pyxfiles])
+ext_modules = cythonize([Extension(p.replace(os.sep, '.')[:-4].split('.',1)[1], [p], include_dirs=incdirs) for p in pyxfiles])
 
 def compile_uis(packageroot):
     if compileUi is None:
