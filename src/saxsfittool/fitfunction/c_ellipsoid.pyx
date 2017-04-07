@@ -1,4 +1,3 @@
-cimport numpy as np
 cimport libc.math as math
 import cython
 import numpy as np
@@ -202,7 +201,7 @@ def F2AsymmetricEllipsoidalShell(np.ndarray[np.float_t, ndim=1] q not None, doub
         Py_ssize_t i
         double mu
         np.ndarray[np.double_t, ndim=1] out
-    out=FAsymmetricEllipsoidalShell_oriented(q, etacore, etashell, etasolvent, a, b, ta, tb, 0.0)
+    out=FAsymmetricEllipsoidalShell_oriented(q, etacore, etashell, etasolvent, a, b, ta, tb, 0.0)**2
     for i in range(0, Nmu):
         mu=1/(Nmu)*(i+1)
         out += FAsymmetricEllipsoidalShell_oriented(q, etacore, etashell, etasolvent, a, b, ta, tb, mu)**2

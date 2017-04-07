@@ -263,6 +263,15 @@ class FitParametersModel(QtCore.QAbstractItemModel):
     def parameters(self):
         return self._parameters
 
+    @parameters.setter
+    def parameters(self, newparams):
+        self.beginRemoveRows(QtCore.QModelIndex(), 0, len(self._parameters))
+        self._parameters = []
+        self.endRemoveRows()
+        self.beginInsertRows(QtCore.QModelIndex(), 0, len(newparams))
+        self._parameters = newparams
+        self.endInsertRows()
+
     def update_parameters(self, values, uncertainties):
         assert len(values) == len(self._parameters)
         assert len(uncertainties) == len(self._parameters)
@@ -407,7 +416,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.exportResultsPushButton.clicked.connect(Form.exportResults)
         Form.rePlot()
         Form.loadParametersPushButton.clicked.connect(Form.loadParameters)
-        Form.setWindowTitle('SAXSFitTool v{} :: no file loaded yet'.format(pkg_resources.get_distribution('saxsfittool').version))
+        Form.setWindowTitle(
+            'SAXSFitTool v{} :: no file loaded yet'.format(pkg_resources.get_distribution('saxsfittool').version))
 
     def loadParameters(self):
         filename, filter = QtWidgets.QFileDialog.getOpenFileName(
@@ -422,23 +432,13 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                 errormessage = 'Cannot unpickle file'
                 data = pickle.load(f)
             errormessage = 'Malformed saxsfittool results file'
-            params=data['params']
+            params = data['params']
             currentparams = self.parametersModel.parameters
             errormessage = 'The parameter file you selected is incompatible with the current model function.'
-            if not all ([p['name']==pc['name'] for p,pc in zip(params, currentparams)]):
+            if not all([p['name'] == pc['name'] for p, pc in zip(params, currentparams)]):
                 raise ValueError(errormessage)
-            errormessage = 'Cannot get all parameter values from the file'
-            values = [p['value'] for p in params]
-            errormessage = 'Cannot get all parameter uncertainties from the file'
-            uncertainties = [p['uncertainty'] for p in params]
-            errormessage = 'Cannot get all parameter lower bounds from the file'
-            lower = [p['lowerbound'] for p in params]
-            errormessage = 'Cannot get all parameter upper bounds from the file'
-            upper = [p['upperbound'] for p in params]
-            self.parametersModel.update_parameters(values, uncertainties)
-            self.parametersModel.update_limits(lower, upper)
-            errormessage = 'Cannot get all parameter active masks from the file'
-            self.parametersModel.update_active_mask([p['enbled'] for p in params])
+            errormessage = 'Error while updating parameters'
+            self.parametersModel.parameters = params
         except Exception as exc:
             QtWidgets.QMessageBox.critical(self, 'Error while loading file', errormessage)
 
@@ -454,12 +454,11 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         filename, filter = QtWidgets.QFileDialog.getSaveFileName(
             self,
             "Select file to save parameter & results pickle to...",
-            os.path.splitext(self.windowFilePath())[0]+'.pickle', filter='*.pickle')
+            os.path.splitext(self.windowFilePath())[0] + '.pickle', filter='*.pickle')
         if filename:
             with open(filename, 'wb') as f:
                 pickle.dump(results, f)
         logger.info('Results saved to file {}'.format(filename))
-
 
     def fitFunctionSelected(self):
         FitFunctionClass = self.fitFunctionClass()
@@ -537,7 +536,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         ff = self.fitFunctionClass()()
         assert isinstance(ff, FitFunction)
         fittedcurve = Curve(self.roiX, ff.function(self.roiX, *val))
-        self._line_fitted, = fittedcurve.plot('r-', axes=self.axes)
+        self._line_fitted, = fittedcurve.plot('r-', axes=self.axes, zorder=10)
         self._line_residuals, = (self.curve() - fittedcurve).plot('b.-', axes=self.axes_residuals)
         self.axes_residuals.set_xlim(*self.axes.get_xlim())
         self.axes_residuals.set_xscale(self.axes.get_xscale())
@@ -573,8 +572,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self._line_roi.remove()
             self._line_roi = None
         mask = self.dataMask
-        self._line_roi = self.axes.errorbar(self.roiX, self.roiY, self.roiDY, self.roiDX, 'b.')
-        self._line_masked = self.axes.plot(self.maskedX, self.maskedY, '.', color='gray')[0]
+        self._line_roi = self.axes.errorbar(self.roiX, self.roiY, self.roiDY, self.roiDX, 'b.', zorder=0)
+        self._line_masked = self.axes.plot(self.maskedX, self.maskedY, '.', color='gray', zorder=0)[0]
         self.axes.autoscale(True, 'both', True)
         self.axes.grid(True, which='both')
         scaling = self.plotModeComboBox.currentText()
@@ -661,7 +660,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
     def dataMask(self):
         return np.logical_and(self.dataX >= self.minimumXDoubleSpinBox.value(),
                               self.dataX <= self.maximumXDoubleSpinBox.value())
-
 
     def doFitting(self):
         logger.info('Starting fit of dataset.')

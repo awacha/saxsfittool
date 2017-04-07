@@ -1,4 +1,3 @@
-cimport numpy as np
 import numpy as np
 from libc.math cimport exp, sin, cos, M_PI
 
@@ -72,4 +71,35 @@ def F2GaussianSphereDistribution(np.ndarray[np.double_t] q, double r0, double si
             q_ = (<double*> np.PyArray_MultiIter_DATA(it, 0))[0]
             (<double*> np.PyArray_MultiIter_DATA(it, 1))[0] = f2gaussianspheredistribution_intensity(q_, r0, sigma, N)
             np.PyArray_MultiIter_NEXT(it)
+    return out
+
+cdef f2gaussiancoreshellspheredistribution(double q,
+                                           double rin, double shellthickness,
+                                           double sigmarin, double rhoin,
+                                           double rhoshell, unsigned long N=1000):
+    cdef:
+        double r = rin - 3 * sigmarin
+        double dr = 6 * sigmarin / (N - 1)
+        double intensity = 0, weight = 0, w = 0
+    while r <= rin + 3 * sigmarin:
+        w = gaussian(r, rin, sigmarin)
+        intensity += ((rhoin-rhoshell)*Vsphere(r)*phisphere(q, r)+rhoshell*Vsphere(r+shellthickness)*phisphere(q,r+shellthickness)) ** 2 * w
+        weight += w
+        r += dr
+    return intensity / weight
+
+
+def F2GaussianCoreShellSphereDistribution(
+        np.ndarray[np.double_t] q, double rin, double shellthickness,
+        double sigmarin, double rhoin, double rhoshell, unsigned long N=1000):
+    out = np.empty_like(q, np.double)
+    cdef:
+        np.broadcast it = np.broadcast(q, out)
+        double q_
+
+    while np.PyArray_MultiIter_NOTDONE(it):
+        q_ = (<double*> np.PyArray_MultiIter_DATA(it, 0))[0]
+        (<double*> np.PyArray_MultiIter_DATA(it, 1))[0] = f2gaussiancoreshellspheredistribution(
+            q_, rin, shellthickness, sigmarin, rhoin, rhoshell, N)
+        np.PyArray_MultiIter_NEXT(it)
     return out

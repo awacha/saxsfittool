@@ -1,9 +1,12 @@
 import numpy as np
+from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from matplotlib.patches import Ellipse
 
 from .c_bilayer import F2FiveGaussSymmetricHeadBilayer
 from .c_ellipsoid import F2EllipsoidalShell, F2AsymmetricEllipsoidalShell
-from .c_spheredistrib import F2GaussianSphereDistribution
+from .c_ellipsoid2 import AsymmetricEllipsoidalShell
+from .c_spheredistrib import F2GaussianSphereDistribution, F2GaussianCoreShellSphereDistribution
 
 
 class FitFunction(object):
@@ -143,6 +146,115 @@ class F2AsymmetricCoreShellEllipsoidWithBackground(FitFunction):
 
     def function(self, x, eta_core, eta_shell, eta_solvent, a, b, ta, tb, C):
         return F2AsymmetricEllipsoidalShell(x, eta_core, eta_shell, eta_solvent, a, b, ta, tb) + C
+
+class F2AsymmetricCoreShellEllipsoidWithBackgroundI0RgA(FitFunction):
+    name = 'Rotational core-shell ellipsoid + background, I0 and Rg parameters, branch A'
+
+    arguments = [('I0', 'Intensity extrapolated to zero'),
+                 ('Rg', 'Radius of gyration'),
+                 ('a', 'Principal semi-axis of the core'),
+                 ('b', 'Equatorial semi-axis of the core'),
+                 ('ta', 'Shell thickness (along the principal axis)'),
+                 ('tb', 'Shell thickness (along the equatorial axes)'),
+                 ('bg', 'Constant background')]
+
+    description = "Scattering intensity of an asymmetric rotational core-shell ellipsoid with additional constant background, branch A"
+
+    def function(self, x, I0, Rg, a, b, ta, tb, C):
+        eta_solvent = 0
+        btb=b+tb
+        ata=a+ta
+        btb2ata = btb**2*ata
+        b2a = b**2*a
+        rhocoredivrhoshell = (ata**3*btb**2+2*ata*btb**4-5*Rg**2*ata*btb**2-a**3*b**2-2*a*b**4+5*a*b**2*Rg**2)/(5*a*b**2*Rg**2-a**3*b**2-2*a*b**4)
+        eta_shell = 3*I0**0.5/4/np.pi/(rhocoredivrhoshell*b2a+btb2ata-b2a)
+        eta_core = rhocoredivrhoshell*eta_shell
+        return AsymmetricEllipsoidalShell(x, eta_core, eta_shell, a, b, ta, tb) + C
+
+    def draw_representation(self, fig, x, I0, Rg, a, b, ta, tb, C):
+        eta_solvent = 0
+        btb=b+tb
+        ata=a+ta
+        btb2ata = btb**2*ata
+        b2a = b**2*a
+        rhocoredivrhoshell = (ata**3*btb**2+2*ata*btb**4-5*Rg**2*ata*btb**2-a**3*b**2-2*a*b**4+5*a*b**2*Rg**2)/(5*a*b**2*Rg**2-a**3*b**2-2*a*b**4)
+        eta_shell = 3*I0**0.5/4/np.pi/(rhocoredivrhoshell*b2a+btb2ata-b2a)
+        eta_core = rhocoredivrhoshell*eta_shell
+        fig.clear()
+        ax=fig.add_subplot(1,1,1)
+        assert isinstance(ax, Axes)
+        p=Ellipse((0,0),2*(b+tb),2*(a+ta),color='yellow')
+        ax.add_patch(p)
+        p=Ellipse((0,0),2*(b),2*(a), color='green')
+        ax.add_patch(p)
+        ax.vlines(0,-a-ta,a+ta,linestyle='--',color='black')
+        ax.autoscale_view(True, True, True)
+        ax.text(0.05,0.95,
+                '$a$: {}\n'
+                '$b$: {}\n'
+                '$t_a$: {}\n'
+                '$t_b$: {}\n'
+                '$\\rho_\mathrm{{core}}$: {}\n'
+                '$\\rho_\mathrm{{shell}}$: {}\n'
+                '$I_0$: {}\n'
+                '$R_g$: {}\n'.format(a,b,ta,tb, eta_core, eta_shell, I0, Rg),
+                transform=ax.transAxes,ha='left',va='top')
+        fig.canvas.draw()
+
+class F2AsymmetricCoreShellEllipsoidWithBackgroundI0RgB(FitFunction):
+    name = 'Rotational core-shell ellipsoid + background, I0 and Rg parameters, branch B'
+
+    arguments = [('I0', 'Intensity extrapolated to zero'),
+                 ('Rg', 'Radius of gyration'),
+                 ('a', 'Principal semi-axis of the core'),
+                 ('b', 'Equatorial semi-axis of the core'),
+                 ('ta', 'Shell thickness (along the principal axis)'),
+                 ('tb', 'Shell thickness (along the equatorial axes)'),
+                 ('bg', 'Constant background')]
+
+    description = "Scattering intensity of an asymmetric rotational core-shell ellipsoid with additional constant background, branch B"
+
+    def function(self, x, I0, Rg, a, b, ta, tb, C):
+        eta_solvent = 0
+        btb=b+tb
+        ata=a+ta
+        btb2ata = btb**2*ata
+        b2a = b**2*a
+        rhocoredivrhoshell = (ata**3*btb**2+2*ata*btb**4-5*Rg**2*ata*btb**2-a**3*b**2-2*a*b**4+5*a*b**2*Rg**2)/(5*a*b**2*Rg**2-a**3*b**2-2*a*b**4)
+        eta_shell = -3*I0**0.5/4/np.pi/(rhocoredivrhoshell*b2a+btb2ata-b2a)
+        eta_core = rhocoredivrhoshell*eta_shell
+        return AsymmetricEllipsoidalShell(x, eta_core, eta_shell, a, b, ta, tb) + C
+
+    def draw_representation(self, fig, x, I0, Rg, a, b, ta, tb, C):
+        eta_solvent = 0
+        btb=b+tb
+        ata=a+ta
+        btb2ata = btb**2*ata
+        b2a = b**2*a
+        rhocoredivrhoshell = (ata**3*btb**2+2*ata*btb**4-5*Rg**2*ata*btb**2-a**3*b**2-2*a*b**4+5*a*b**2*Rg**2)/(5*a*b**2*Rg**2-a**3*b**2-2*a*b**4)
+        eta_shell = -3*I0**0.5/4/np.pi/(rhocoredivrhoshell*b2a+btb2ata-b2a)
+        eta_core = rhocoredivrhoshell*eta_shell
+        fig.clear()
+        ax=fig.add_subplot(1,1,1)
+        assert isinstance(ax, Axes)
+        p=Ellipse((0,0),2*(b+tb),2*(a+ta),color='yellow')
+        ax.add_patch(p)
+        p=Ellipse((0,0),2*(b),2*(a), color='green')
+        ax.add_patch(p)
+        ax.vlines(0,-a-ta,a+ta,linestyle='--',color='black')
+        ax.autoscale_view(True, True, True)
+        ax.text(0.05,0.95,
+                '$a$: {}\n'
+                '$b$: {}\n'
+                '$t_a$: {}\n'
+                '$t_b$: {}\n'
+                '$\\rho_\mathrm{{core}}$: {}\n'
+                '$\\rho_\mathrm{{shell}}$: {}\n'
+                '$I_0$: {}\n'
+                '$R_g$: {}\n'.format(a,b,ta,tb, eta_core, eta_shell, I0, Rg),
+                transform=ax.transAxes,ha='left',va='top')
+        fig.canvas.draw()
+
 
 
 class Gaussian(FitFunction):
@@ -351,3 +463,121 @@ class GaussianSphereDistribution_mass(FitFunction):
 
     def function(self, x, factor, background, r0, dr):
         return factor * F2GaussianSphereDistribution(x, r0, dr, weighting='mass') + background
+
+class CoreShellSphereGaussianDistribution(FitFunction):
+    name = "Spherical core-shell particles, Gaussian size distribution"
+
+    description = "Intensity weighted distribution of spherical core-shell nanoparticles"
+
+    arguments = [('factor', 'Scaling factor'),
+                 ('background', 'Constant background'),
+                 ('rcore', 'Mean core radius'),
+                 ('sigmacore', 'HWHM of the core radius'),
+                 ('tshell', 'Shell thickness'),
+                 ('rhoshell_relative', 'SLD of the shell: the core is -1')]
+
+    def function(self, x, factor, background, rcore, sigmacore, tshell, rhoshell_relative):
+        return factor * F2GaussianCoreShellSphereDistribution(x, rcore, tshell, sigmacore, -1.0, rhoshell_relative) + background
+
+class CoreShellSphereGaussianDistributionRgI0A(FitFunction):
+    name = "Gaussian distribution of core-shell spheres, parametrized with Rg and I0, branch A"
+
+    description = "Spherical core-shell nanoparticles, with Rg and I0, branch A"
+
+    arguments = [('I0', 'Intensity extrapolated to zero'),
+                 ('background', 'Constant background'),
+                 ('Rg', 'Radius of gyration'),
+                 ('rcore', 'Mean core radius'),
+                 ('sigmacore', 'HWHM of the core radius'),
+                 ('tshell', 'Shell thickness'),
+                 ]
+
+    def function(self, x, I0, background, Rg, rcore, sigmacore, tshell):
+        R5=rcore**5
+        R3=rcore**3
+        Rpt3= (rcore+tshell)**3
+        Rpt5 = (rcore+tshell)**5
+        Rg253=5/3*Rg**2
+        rhocoredivrhoshell=(Rpt5-R5-Rg253*(Rpt3-R3))/(Rg253*R3-R5)
+        rhoshell = 3*I0**0.5/4/np.pi/(Rpt3-R3+R3*rhocoredivrhoshell)
+        rhocore = rhoshell*rhocoredivrhoshell
+        return F2GaussianCoreShellSphereDistribution(x, rcore, tshell, sigmacore, rhocore, rhoshell) + background
+
+    def draw_representation(self, fig, x, I0, background, Rg, rcore, sigmacore, tshell):
+        R5=rcore**5
+        R3=rcore**3
+        Rpt3= (rcore+tshell)**3
+        Rpt5 = (rcore+tshell)**5
+        Rg253=5/3*Rg**2
+        fig.clear()
+        ax=fig.add_subplot(1,1,1)
+        assert isinstance(ax, Axes)
+        p=Ellipse((0,0),2*(rcore+tshell),2*(rcore+tshell),color='yellow')
+        ax.add_patch(p)
+        p=Ellipse((0,0),2*(rcore),2*(rcore), color='green')
+        ax.add_patch(p)
+        rhocoredivrhoshell=(Rpt5-R5-Rg253*(Rpt3-R3))/(Rg253*R3-R5)
+        rhoshell = 3*I0**0.5/4/np.pi/(Rpt3-R3+R3*rhocoredivrhoshell)
+        rhocore = rhoshell*rhocoredivrhoshell
+        ax.autoscale_view(True, True, True)
+        ax.text(0.05,0.95,
+                '$R_\mathrm{{core}}$: {}\n'
+                '$T_\mathrm{{shell}}$: {}\n'
+                '$\\rho_\mathrm{{core}}$: {}\n'
+                '$\\rho_\mathrm{{shell}}$: {}\n'
+                '$I_0$: {}\n'
+                '$R_g$: {}\n'.format(rcore, tshell, rhocore, rhoshell, I0, Rg),
+                transform=ax.transAxes,ha='left',va='top')
+        fig.canvas.draw()
+
+
+class CoreShellSphereGaussianDistributionRgI0B(FitFunction):
+    name = "Gaussian distribution of core-shell spheres, parametrized with Rg and I0, branch B"
+
+    description = "Spherical core-shell nanoparticles, with Rg and I0, branch B"
+
+    arguments = [('I0', 'Intensity extrapolated to zero'),
+                 ('background', 'Constant background'),
+                 ('Rg', 'Radius of gyration'),
+                 ('rcore', 'Mean core radius'),
+                 ('sigmacore', 'HWHM of the core radius'),
+                 ('tshell', 'Shell thickness'),
+                 ]
+
+    def function(self, x, I0, background, Rg, rcore, sigmacore, tshell):
+        R5=rcore**5
+        R3=rcore**3
+        Rpt3= (rcore+tshell)**3
+        Rpt5 = (rcore+tshell)**5
+        Rg253=5/3*Rg**2
+        rhocoredivrhoshell=(Rpt5-R5-Rg253*(Rpt3-R3))/(Rg253*R3-R5)
+        rhoshell = -3*I0**0.5/4/np.pi/(Rpt3-R3+R3*rhocoredivrhoshell)
+        rhocore = rhoshell*rhocoredivrhoshell
+        return F2GaussianCoreShellSphereDistribution(x, rcore, tshell, sigmacore, rhocore, rhoshell) + background
+
+    def draw_representation(self, fig, x, I0, background, Rg, rcore, sigmacore, tshell):
+        R5=rcore**5
+        R3=rcore**3
+        Rpt3= (rcore+tshell)**3
+        Rpt5 = (rcore+tshell)**5
+        Rg253=5/3*Rg**2
+        fig.clear()
+        ax=fig.add_subplot(1,1,1)
+        assert isinstance(ax, Axes)
+        p=Ellipse((0,0),2*(rcore+tshell),2*(rcore+tshell),color='yellow')
+        ax.add_patch(p)
+        p=Ellipse((0,0),2*(rcore),2*(rcore), color='green')
+        ax.add_patch(p)
+        rhocoredivrhoshell=(Rpt5-R5-Rg253*(Rpt3-R3))/(Rg253*R3-R5)
+        rhoshell = -3*I0**0.5/4/np.pi/(Rpt3-R3+R3*rhocoredivrhoshell)
+        rhocore = rhoshell*rhocoredivrhoshell
+        ax.autoscale_view(True, True, True)
+        ax.text(0.05,0.95,
+                '$R_\mathrm{{core}}$: {}\n'
+                '$T_\mathrm{{shell}}$: {}\n'
+                '$\\rho_\mathrm{{core}}$: {}\n'
+                '$\\rho_\mathrm{{shell}}$: {}\n'
+                '$I_0$: {}\n'
+                '$R_g$: {}\n'.format(rcore, tshell, rhocore, rhoshell, I0, Rg),
+                transform=ax.transAxes,ha='left',va='top')
+        fig.canvas.draw()
