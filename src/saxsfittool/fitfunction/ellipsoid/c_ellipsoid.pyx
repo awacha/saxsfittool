@@ -1,9 +1,8 @@
-cimport
-libc.math as math
-cimport
-numpy as np
 import cython
+cimport cython
 import numpy as np
+cimport numpy as np
+from libc cimport math
 
 np.import_array()
 

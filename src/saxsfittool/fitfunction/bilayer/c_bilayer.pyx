@@ -1,4 +1,5 @@
 import numpy as np
+cimport numpy as np
 from libc.math cimport exp, sin, cos
 
 np.import_array()

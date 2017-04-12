@@ -1,7 +1,6 @@
-cimport
-numpy as np
 import numpy as np
-from libc.math cimport
+cimport numpy as np
+from libc.math cimport exp, sin, cos, M_PI
 
 np.import_array()
 
