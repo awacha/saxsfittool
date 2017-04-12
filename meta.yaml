@@ -18,7 +18,7 @@ requirements:
     - numpy
     - scipy
     - cython
-    - sastool >=0.9.0
+    - sastool >=1.0.5
 
   run:
     - python
@@ -26,7 +26,7 @@ requirements:
     - scipy
     - matplotlib
     - pyqt >=5
-    - sastool >=0.9.0
+    - sastool >=1.0.5
 
 about:
   home: https://github.com/awacha/saxsfittool

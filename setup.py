@@ -3,11 +3,12 @@
 import os
 from distutils.sysconfig import get_python_lib, get_python_inc
 
+
 try:
     from Cython.Build import cythonize
 except ImportError:
     cythonize = lambda x:x
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.extension import Extension
 try:
     from PyQt5.uic import compileUi
@@ -48,13 +49,13 @@ setup(name='saxsfittool', author='Andras Wacha',
       author_email='awacha@gmail.com', url='http://github.com/awacha/saxsfittool',
       description='GUI utility for model fitting to SAXS curves',
       package_dir={'': 'src'},
-      packages=['saxsfittool', 'saxsfittool.resource', 'saxsfittool.fitfunction'],
+      packages=find_packages('src'),
       entry_points={'gui_scripts': ['saxsfittool = saxsfittool.mainwindow:run'],
                     },
       package_data={'': ['*.ui']},
       ext_modules=cythonize(ext_modules),
       install_requires=['numpy>=1.0.0', 'scipy>=0.7.0', 'matplotlib',
-                        'Cython>=0.15', 'setuptools_scm', 'sastool>=0.9.0'],
+                        'Cython>=0.15', 'setuptools_scm', 'sastool>=1.0.5'],
       use_scm_version=True,
       setup_requires=['Cython>=0.15'],
       keywords="saxs least squares model fitting",

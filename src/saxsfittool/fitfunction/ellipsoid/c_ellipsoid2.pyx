@@ -4,6 +4,8 @@ import cython
 import numpy as np
 from libc cimport
 
+np.import_array()
+
 cdef double j1divx(double x):
     return (math.sin(x) - x * math.cos(x)) / x ** 3
 

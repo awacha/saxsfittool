@@ -1,6 +1,11 @@
-cimport libc.math as math
+cimport
+libc.math as math
+cimport
+numpy as np
 import cython
 import numpy as np
+
+np.import_array()
 
 cdef double j1divx(double x):
     return (math.sin(x)-x*math.cos(x))/x**3

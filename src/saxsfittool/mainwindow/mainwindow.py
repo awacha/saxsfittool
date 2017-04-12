@@ -1,11 +1,9 @@
 import logging
 import os
 import pickle
-import sys
 import textwrap
 from concurrent.futures import ProcessPoolExecutor, Future
 
-import matplotlib.cm
 import numpy as np
 import pkg_resources
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -15,323 +13,15 @@ from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec
 from sastool.classes2.curve import Curve, FixedParameter
 
-from .fitfunction import FitFunction
+from .fitfunctionsmodel import FitFunctionsModel
+from .fitparametersmodel import FitParametersModel
 from .logviewer import LogViewer
-from .resource.saxsfittool_ui import Ui_Form
+from .parametercorrelationmodel import ParameterCorrelationModel
+from .saxsfittool_ui import Ui_Form
+from .spinboxdelegate import SpinBoxDelegate
+from ..fitfunction import FitFunction
 
 logger = logging.getLogger(__name__)
-
-
-class SpinBoxDelegate(QtWidgets.QStyledItemDelegate):
-    def createEditor(self, parent: QtWidgets.QWidget, options: QtWidgets.QStyleOptionViewItem,
-                     index: QtCore.QModelIndex):
-        if index.column() in [1, 2, 3]:
-            editor = QtWidgets.QDoubleSpinBox(parent)
-            editor.setFrame(False)
-            editor.setMinimum(-np.inf)
-            editor.setMaximum(np.inf)
-            editor.setDecimals(10)
-        else:
-            editor = super().createEditor(parent, options, index)
-        return editor
-
-    def setEditorData(self, editor: QtWidgets.QWidget, index: QtCore.QModelIndex):
-        if index.column() in [1, 2, 3]:
-            assert isinstance(editor, QtWidgets.QDoubleSpinBox)
-            editor.setValue(float(index.model().data(index, QtCore.Qt.EditRole)))
-        else:
-            super().setEditorData(editor, index)
-
-    def setModelData(self, editor: QtWidgets.QWidget, model: QtCore.QAbstractItemModel, index: QtCore.QModelIndex):
-        if index.column() in [1, 2, 3]:
-            assert isinstance(editor, QtWidgets.QDoubleSpinBox)
-            editor.interpretText()
-            value = editor.value()
-            model.setData(index, value, QtCore.Qt.EditRole)
-        else:
-            super().setModelData(editor, model, index)
-
-    def updateEditorGeometry(self, editor: QtWidgets.QWidget, options: QtWidgets.QStyleOptionViewItem,
-                             index: QtCore.QModelIndex):
-        if index.column() in [1, 2, 3]:
-            editor.setGeometry(options.rect)
-        else:
-            super().updateEditorGeometry(editor, options, index)
-
-
-class FitFunctionsModel(QtCore.QAbstractItemModel):
-    def __init__(self):
-        super().__init__()
-        self._functions = sorted(FitFunction.getsubclasses(), key=lambda x: x.name)
-
-    def index(self, row, column, parent=None, *args, **kwargs):
-        if column not in [0, 1]:
-            raise ValueError('Invalid column: {}'.format(column))
-        if row >= len(self._functions):
-            raise ValueError('Invalid row: {}'.format(row))
-        return self.createIndex(row, column, row * 2 + column)
-
-    def parent(self, modelindex=None):
-        return QtCore.QModelIndex()
-
-    def rowCount(self, parent=None, *args, **kwargs):
-        return len(self._functions)
-
-    def columnCount(self, parent=None, *args, **kwargs):
-        return 2
-
-    def data(self, modelindex, role=None):
-        if role is None:
-            role = QtCore.Qt.DisplayRole
-        if role == QtCore.Qt.DisplayRole:
-            if modelindex.column() == 0:
-                return self._functions[modelindex.row()].name
-            elif modelindex.column() == 1:
-                return self._functions[modelindex.row()]
-        else:
-            return None
-
-
-class FitParametersModel(QtCore.QAbstractItemModel):
-    """A model storing fit parameters.
-
-    Columns:
-    (X) name | (X) lower bound | (X) upper bound | value | uncertainty
-
-    (X) : has a tick/checker.
-
-    The checker before the first column ("name") allows or disables
-    fitting of the parameter. If fitting is allowed, "lower bound"
-    and "upper bound" are checkable.
-
-    """
-
-    def __init__(self, parameters):
-        self._parameters = []
-        for l in parameters:
-            self._parameters.append({'name': l[0],
-                                     'lowerbound': 0,
-                                     'lowerbound_enabled': False,
-                                     'upperbound_enabled': False,
-                                     'lowerbound_active': False,
-                                     'upperbound_active': False,
-                                     'upperbound': 0,
-                                     'value': 1,
-                                     'uncertainty': 0,
-                                     'description': l[1],
-                                     'enabled': True})
-        super().__init__()
-
-    def index(self, row, column, parent=None, *args, **kwargs):
-        if column not in [0, 1, 2, 3, 4]:
-            raise ValueError('Invalid column: {}'.format(column))
-        if row >= len(self._parameters):
-            raise ValueError('Invalid row: {}'.format(row))
-        return self.createIndex(row, column, None)
-
-    def parent(self, modelindex=None):
-        return QtCore.QModelIndex()
-
-    def rowCount(self, parent=None, *args, **kwargs):
-        return len(self._parameters)
-
-    def columnCount(self, parent=None, *args, **kwargs):
-        return 5
-
-    def headerData(self, column, orientation, role=None):
-        if orientation == QtCore.Qt.Vertical:
-            return None
-        if role is None:
-            role = QtCore.Qt.DisplayRole
-        if role == QtCore.Qt.DisplayRole:
-            return ['Name', 'Min.', 'Max.', 'Value', 'Uncertainty'][column]
-
-    def flags(self, modelindex):
-        column = modelindex.column()
-        row = modelindex.row()
-        flagstoset = QtCore.Qt.ItemNeverHasChildren
-        if column == 0:
-            # The name column is user-checkable.
-            flagstoset |= QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
-        elif column in [1, 2]:
-            # lower and upper bound is user-checkable iff fitting is enabled
-            if self._parameters[row]['enabled']:
-                flagstoset |= QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled
-            if (column == 1) and (self._parameters[row]['lowerbound_enabled']):
-                flagstoset |= QtCore.Qt.ItemIsEditable
-            elif (column == 2) and (self._parameters[row]['upperbound_enabled']):
-                flagstoset |= QtCore.Qt.ItemIsEditable
-        elif column == 3:
-            # the value is always enabled and editable
-            flagstoset |= QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable
-        elif column == 4:
-            if self._parameters[row]['enabled']:
-                flagstoset |= QtCore.Qt.ItemIsEnabled
-        return flagstoset
-
-    def data(self, modelindex, role=None):
-        row = modelindex.row()
-        column = modelindex.column()
-        if role is None:
-            role = QtCore.Qt.DisplayRole
-        if column == 0:
-            if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
-                return self._parameters[row]['name']
-            elif role == QtCore.Qt.CheckStateRole:
-                return [QtCore.Qt.Unchecked, QtCore.Qt.Checked][self._parameters[row]['enabled']]
-        elif column == 1:
-            if role == QtCore.Qt.DisplayRole:
-                if self._parameters[row]['lowerbound_enabled']:
-                    return str(self._parameters[row]['lowerbound'])
-                else:
-                    return 'Unlimited'
-            elif role == QtCore.Qt.EditRole:
-                assert self._parameters[row]['lowerbound_enabled']
-                return self._parameters[row]['lowerbound']
-            elif role == QtCore.Qt.CheckStateRole:
-                return [QtCore.Qt.Unchecked, QtCore.Qt.Checked][self._parameters[row]['lowerbound_enabled']]
-            elif role == QtCore.Qt.DecorationRole:
-                return [None, QtGui.QIcon.fromTheme('dialog-warning')][self._parameters[row]['lowerbound_active']]
-        elif column == 2:
-            if role == QtCore.Qt.DisplayRole:
-                if self._parameters[row]['upperbound_enabled']:
-                    return str(self._parameters[row]['upperbound'])
-                else:
-                    return 'Unlimited'
-            elif role == QtCore.Qt.EditRole:
-                assert self._parameters[row]['upperbound_enabled']
-                return self._parameters[row]['upperbound']
-            elif role == QtCore.Qt.CheckStateRole:
-                return [QtCore.Qt.Unchecked, QtCore.Qt.Checked][self._parameters[row]['upperbound_enabled']]
-            elif role == QtCore.Qt.DecorationRole:
-                return [None, QtGui.QIcon.fromTheme('dialog-warning')][self._parameters[row]['upperbound_active']]
-        elif column == 3:
-            if role == QtCore.Qt.DisplayRole:
-                return str(self._parameters[row]['value'])
-            elif role == QtCore.Qt.EditRole:
-                return self._parameters[row]['value']
-            elif role == QtCore.Qt.BackgroundRole:
-                if ((self._parameters[row]['upperbound_enabled'] and
-                             self._parameters[row]['value'] > self._parameters[row]['upperbound']) or
-                        (self._parameters[row]['lowerbound_enabled'] and
-                                 self._parameters[row]['value'] < self._parameters[row]['lowerbound'])):
-                    return QtGui.QBrush(QtCore.Qt.red)
-        elif column == 4:
-            if role == QtCore.Qt.DisplayRole:
-                if self._parameters[row]['enabled']:
-                    return str(self._parameters[row]['uncertainty'])
-                else:
-                    return '(fixed)'
-        if role == QtCore.Qt.ToolTipRole:
-            return self._parameters[row]['description']
-        return None
-
-    def setData(self, modelindex, data, role=QtCore.Qt.EditRole):
-        row = modelindex.row()
-        column = modelindex.column()
-        if role is None:
-            role = QtCore.Qt.EditRole
-        if role == QtCore.Qt.CheckStateRole:
-            if column == 0:
-                self._parameters[row]['enabled'] = data == QtCore.Qt.Checked
-                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1, None))
-            elif column == 1:
-                self._parameters[row]['lowerbound_enabled'] = data == QtCore.Qt.Checked
-                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
-            elif column == 2:
-                self._parameters[row]['upperbound_enabled'] = data == QtCore.Qt.Checked
-                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
-            else:
-                return False
-        elif role == QtCore.Qt.EditRole:
-            if column == 1:
-                self._parameters[row]['lowerbound'] = float(data)
-                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
-            elif column == 2:
-                self._parameters[row]['upperbound'] = float(data)
-                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
-            elif column == 3:
-                self._parameters[row]['value'] = float(data)
-                self.dataChanged.emit(modelindex, self.createIndex(row, self.columnCount() - 1))
-            else:
-                return False
-        else:
-            return False
-        return True
-
-    @property
-    def parameters(self):
-        return self._parameters
-
-    @parameters.setter
-    def parameters(self, newparams):
-        self.beginRemoveRows(QtCore.QModelIndex(), 0, len(self._parameters))
-        self._parameters = []
-        self.endRemoveRows()
-        self.beginInsertRows(QtCore.QModelIndex(), 0, len(newparams))
-        self._parameters = newparams
-        self.endInsertRows()
-
-    def update_parameters(self, values, uncertainties):
-        assert len(values) == len(self._parameters)
-        assert len(uncertainties) == len(self._parameters)
-        for i in range(len(self._parameters)):
-            self._parameters[i]['value'] = values[i]
-            self._parameters[i]['uncertainty'] = uncertainties[i]
-        self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(), self.columnCount()))
-
-    def update_limits(self, lower=None, upper=None):
-        if lower is None:
-            lower = [None] * len(self._parameters)
-        if upper is None:
-            upper = [None] * len(self._parameters)
-        for par, low, up in zip(self._parameters, lower, upper):
-            if low is None or low == np.nan:
-                par['lowerbound_enabled'] = False
-                par['lowerbound'] = 0
-            else:
-                par['lowerbound_enabled'] = True
-                par['lowerbound'] = low
-            if up is None or up == np.nan:
-                par['upperbound_enabled'] = False
-                par['upperbound'] = 0
-            else:
-                par['upperbound_enabled'] = True
-                par['upperbound'] = up
-        self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(), self.columnCount()))
-
-    def update_active_mask(self, active_mask):
-        for par, am in zip(self._parameters, active_mask):
-            par['upperbound_active'] = (am == 1)
-            par['lowerbound_active'] = (am == -1)
-        self.dataChanged.emit(self.createIndex(0, 1), self.createIndex(self.rowCount() - 1, 2),
-                              [QtCore.Qt.DecorationRole])
-
-
-class ParameterCorrelationModel(QtCore.QAbstractTableModel):
-    def __init__(self, correlmatrix, parnames):
-        super().__init__()
-        self._correlmatrix = correlmatrix
-        self._parnames = parnames
-
-    def rowCount(self, parent=None, *args, **kwargs):
-        return self._correlmatrix.shape[0]
-
-    def columnCount(self, parent=None, *args, **kwargs):
-        return self._correlmatrix.shape[1]
-
-    def data(self, index: QtCore.QModelIndex, role=None):
-        if role == QtCore.Qt.DisplayRole:
-            return '{:.4f}'.format(self._correlmatrix[index.row(), index.column()])
-        if role == QtCore.Qt.BackgroundRole:
-            color = matplotlib.cm.RdYlGn_r(np.abs(self._correlmatrix[index.row(), index.column()]))
-            return QtGui.QBrush(QtGui.QColor(*[int(component * 255) for component in color]))
-
-    def headerData(self, idx, orientation, role=None):
-        if role == QtCore.Qt.DisplayRole:
-            return self._parnames[idx]
-        return None
-
 
 class MainWindow(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
@@ -349,7 +39,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self._lastfitcurve = None
         self._lastfitstats = None
         self.setupUi(self)
-        self.openButton.clicked.connect(self.openFile)
         logging.root.addHandler(self.logViewer)
         self.show()
 
@@ -418,6 +107,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.loadParametersPushButton.clicked.connect(Form.loadParameters)
         Form.setWindowTitle(
             'SAXSFitTool v{} :: no file loaded yet'.format(pkg_resources.get_distribution('saxsfittool').version))
+        self.openButton.clicked.connect(self.onFileSelected)
 
     def loadParameters(self):
         filename, filter = QtWidgets.QFileDialog.getOpenFileName(
@@ -450,7 +140,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             results['stats'] = self.laststats
         except AttributeError:
             pass
-
+        results['dataset'] = {'x':self.roiX,
+                              'y':self.roiY,
+                              'dx':self.roiDX,
+                              'dy':self.roiDY}
         filename, filter = QtWidgets.QFileDialog.getSaveFileName(
             self,
             "Select file to save parameter & results pickle to...",
@@ -464,7 +157,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         FitFunctionClass = self.fitFunctionClass()
         assert issubclass(FitFunctionClass, FitFunction)
         self.parameters_box.setTitle('Parameters for function "{}"'.format(FitFunctionClass.name))
-        self.parametersModel = FitParametersModel(FitFunctionClass.arguments)
+        self.parametersModel = FitParametersModel(FitFunctionClass.arguments, FitFunctionClass.unfittable_parameters)
         ff = FitFunctionClass()
         initpars = ff.initialize_arguments(self.roiX, self.roiY)
         if not isinstance(initpars, tuple):
@@ -492,15 +185,17 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.minimumXDoubleSpinBox.setMaximum(self.maximumXDoubleSpinBox.value())
         self.rePlot()
 
-    def openFile(self):
+    def onFileSelected(self):
         filename, filter = QtWidgets.QFileDialog.getOpenFileName(self, "Open curve...")
-        if filename is None:
+        if not filename:
             return
+        self.openFile(filename)
+
+    def openFile(self, filename):
         try:
             self.dataset = np.loadtxt(filename)
             self.dataset = self.dataset[np.isfinite(self.dataset.sum(axis=1)), :]
-            self.pathLabel.setText(os.path.split(filename)[0])
-            self.filenameLabel.setText(os.path.split(filename)[1])
+            self.fileNameLineEdit.setText(filename)
             self.setWindowFilePath(filename)
             self.setWindowTitle('SAXSFitTool v{} :: {}'.format(
                 pkg_resources.get_distribution('saxsfittool').version,
@@ -533,6 +228,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self._line_residuals = None
         params = self.parametersModel.parameters
         val = [p['value'] for p in params]
+
         ff = self.fitFunctionClass()()
         assert isinstance(ff, FitFunction)
         fittedcurve = Curve(self.roiX, ff.function(self.roiX, *val))
@@ -664,7 +360,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
     def doFitting(self):
         logger.info('Starting fit of dataset.')
         params = self.parametersModel.parameters
-        val = [[FixedParameter(p['value']), float(p['value'])][p['enabled']] for p in params]
+        val = [[FixedParameter(p['value']), float(p['value'])][p['enabled']] for p in params if p['fittable']]
+        unf = [float(p['value']) for p in params if not p['fittable']]
         if all([isinstance(x, FixedParameter) for x in val]):
             logger.error('Cannot fit with no free parameters.')
             return
@@ -672,7 +369,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         ubound = [[np.inf, p['upperbound']][p['upperbound_enabled']] for p in params]
         self._fit_future = self._fit_executor.submit(self.curve().fit,
                                                      self.fitFunctionClass()().function,
-                                                     val, lbounds=lbound, ubounds=ubound,
+                                                     val, unf, lbounds=lbound, ubounds=ubound,
                                                      ytransform=self.yTransformComboBox.currentText(),
                                                      loss=self.lossFunctionComboBox.currentText(),
                                                      method=self.algorithmComboBox.currentText())
@@ -769,12 +466,3 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self._timer.stop()
 
 
-def run():
-    app = QtWidgets.QApplication(sys.argv)
-    mw = MainWindow()
-    logging.root.setLevel(logging.DEBUG)
-    app.exec_()
-
-
-if __name__ == '__main__':
-    run()

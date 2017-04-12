@@ -1,5 +1,7 @@
+cimport
+numpy as np
 import numpy as np
-from libc.math cimport exp, sin, cos, M_PI
+from libc.math cimport
 
 np.import_array()
 
@@ -73,7 +75,7 @@ def F2GaussianSphereDistribution(np.ndarray[np.double_t] q, double r0, double si
             np.PyArray_MultiIter_NEXT(it)
     return out
 
-cdef f2gaussiancoreshellspheredistribution(double q,
+cdef double f2gaussiancoreshellspheredistribution(double q,
                                            double rin, double shellthickness,
                                            double sigmarin, double rhoin,
                                            double rhoshell, unsigned long N=1000):

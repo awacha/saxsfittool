@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>773</width>
+    <width>845</width>
     <height>810</height>
    </rect>
   </property>
@@ -62,7 +62,7 @@
             <widget class="QDoubleSpinBox" name="maximumXDoubleSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
+               <horstretch>1</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
@@ -82,7 +82,7 @@
             <widget class="QDoubleSpinBox" name="minimumXDoubleSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
+               <horstretch>1</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
@@ -98,23 +98,6 @@
             <widget class="QLabel" name="label_5">
              <property name="text">
               <string>Plot mode:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2" colspan="2">
-            <widget class="QPushButton" name="openButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Open</string>
-             </property>
-             <property name="icon">
-              <iconset theme="document-open">
-               <normaloff>.</normaloff>.</iconset>
              </property>
             </widget>
            </item>
@@ -135,40 +118,36 @@ zoom</string>
              </property>
             </widget>
            </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox">
-          <property name="title">
-           <string>File</string>
-          </property>
-          <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_9">
+           <item row="0" column="3">
+            <widget class="QPushButton" name="openButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
-              <string>Path:</string>
+              <string>Open</string>
+             </property>
+             <property name="icon">
+              <iconset theme="document-open">
+               <normaloff>.</normaloff>.</iconset>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>File name:</string>
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="fileNameLineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>1</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="pathLabel">
-             <property name="text">
-              <string>&lt;no file has been loaded yet&gt;</string>
+             <property name="readOnly">
+              <bool>true</bool>
              </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="filenameLabel">
-             <property name="text">
-              <string>&lt;no file has been loaded yet&gt;</string>
+             <property name="placeholderText">
+              <string>No file has been loaded yet</string>
              </property>
             </widget>
            </item>
@@ -187,43 +166,15 @@ zoom</string>
            <string>Fit control</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="1" rowspan="2">
-            <widget class="QComboBox" name="fitFunctionComboBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="sizeAdjustPolicy">
-              <enum>QComboBox::AdjustToContents</enum>
+           <item row="2" column="2">
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Loss function:</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0" colspan="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QPushButton" name="executePushButton">
-               <property name="text">
-                <string>Execute</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="rePlotPushButton">
-               <property name="text">
-                <string>Replot</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="plotModelPushButton">
-               <property name="text">
-                <string>Plot model</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="yTransformComboBox"/>
            </item>
            <item row="0" column="0" rowspan="2">
             <widget class="QLabel" name="label_4">
@@ -242,17 +193,30 @@ zoom</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_7">
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_8">
              <property name="text">
-              <string>Loss function:</string>
+              <string>Y transform:</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="2" column="3">
             <widget class="QComboBox" name="lossFunctionComboBox"/>
            </item>
-           <item row="5" column="0" colspan="2">
+           <item row="0" column="1" rowspan="2" colspan="3">
+            <widget class="QComboBox" name="fitFunctionComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QComboBox::AdjustToContents</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2" colspan="2">
             <widget class="QCheckBox" name="weightingCheckBox">
              <property name="text">
               <string>Use y error bars for weights</string>
@@ -262,15 +226,36 @@ zoom</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>Y transform:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QComboBox" name="yTransformComboBox"/>
+           <item row="6" column="0" colspan="4">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="executePushButton">
+               <property name="text">
+                <string>Execute</string>
+               </property>
+               <property name="icon">
+                <iconset theme="system-run"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="rePlotPushButton">
+               <property name="text">
+                <string>Replot</string>
+               </property>
+               <property name="icon">
+                <iconset theme="view-refresh"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="plotModelPushButton">
+               <property name="text">
+                <string>Plot model</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -299,7 +284,7 @@ zoom</string>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
             <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
+            <verstretch>1</verstretch>
            </sizepolicy>
           </property>
           <property name="title">
@@ -350,12 +335,18 @@ zoom</string>
             <property name="text">
              <string>Export parameters and results...</string>
             </property>
+            <property name="icon">
+             <iconset theme="document-save-as"/>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="loadParametersPushButton">
             <property name="text">
              <string>Load parameters...</string>
+            </property>
+            <property name="icon">
+             <iconset theme="document-open"/>
             </property>
            </widget>
           </item>
@@ -364,6 +355,12 @@ zoom</string>
        </layout>
       </widget>
       <widget class="QTabWidget" name="tabWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="tabPosition">
         <enum>QTabWidget::North</enum>
        </property>
