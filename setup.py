@@ -28,7 +28,14 @@ pyxfiles = []
 for dir_, subdirs, files in os.walk(os.path.join('src','saxsfittool')):
     pyxfiles.extend([os.path.join(dir_, f) for f in files if f.endswith('.pyx')])
 
-ext_modules = cythonize([Extension(p.replace(os.sep, '.')[:-4].split('.',1)[1], [p], include_dirs=incdirs) for p in pyxfiles])
+ext_modules = cythonize([
+    Extension(
+        p.replace(os.sep, '.')[:-4].split('.',1)[1],
+        [p],
+        include_dirs=incdirs,
+        extra_compile_args=['-fopenmp'],
+        extra_link_args=['-fopenmp']
+    ) for p in pyxfiles])
 
 def compile_uis(packageroot):
     if compileUi is None:
