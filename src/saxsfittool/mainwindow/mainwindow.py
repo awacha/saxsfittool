@@ -1,6 +1,8 @@
 import logging
 import os
 import pickle
+import sys
+import traceback
 import textwrap
 from concurrent.futures import ProcessPoolExecutor, Future
 
@@ -20,6 +22,7 @@ from .parametercorrelationmodel import ParameterCorrelationModel
 from .saxsfittool_ui import Ui_Form
 from .spinboxdelegate import SpinBoxDelegate
 from ..fitfunction import FitFunction
+from .parameterstack import ParameterStack
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +41,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self._line_residuals = None
         self._lastfitcurve = None
         self._lastfitstats = None
+        self._parameterstack = ParameterStack()
+        self._updating = False
         self.setupUi(self)
         logging.root.addHandler(self.logViewer)
         self.show()
@@ -108,6 +113,32 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         Form.setWindowTitle(
             'SAXSFitTool v{} :: no file loaded yet'.format(pkg_resources.get_distribution('saxsfittool').version))
         self.openButton.clicked.connect(self.onFileSelected)
+        Form.historySlider.valueChanged.connect(self.onHistorySlider)
+        Form.clearHistoryPushButton.clicked.connect(self.onClearHistory)
+
+    def onClearHistory(self):
+        self._parameterstack.clear()
+        self._parameterstack.push(self.parametersModel.parameters)
+        self.updateHistorySlider()
+
+    def onHistorySlider(self, value:int):
+        if self._updating:
+            return
+        self._parameterstack.setPointer(value)
+        self.setParameters(self._parameterstack.get())
+
+    def setParameters(self, parameters):
+        # print('setParameters')
+        # for p in parameters:
+        #     print(p['name'],p['value'])
+        currentparams = self.parametersModel.parameters
+        if not all([p['name'] == pc['name'] for p, pc in zip(parameters, currentparams)]):
+            raise ValueError('The parameter file you selected is incompatible with the current model function. Parameters in the file: {}'.format(', '.join([p['name'] for p in parameters])))
+        for pnew in parameters:
+            pold = [p for p in self.parametersModel.parameters if p['name']==pnew['name']][0]
+            for k in pnew:
+                pold[k]=pnew[k]
+        self.parametersModel.emitParametersChanged()
 
     def loadParameters(self):
         filename, filter = QtWidgets.QFileDialog.getOpenFileName(
@@ -117,20 +148,13 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         if not filename:
             return
         try:
-            errormessage = 'Cannot open file'
             with open(filename, 'rb') as f:
-                errormessage = 'Cannot unpickle file'
                 data = pickle.load(f)
-            errormessage = 'Malformed saxsfittool results file'
             params = data['params']
-            currentparams = self.parametersModel.parameters
-            errormessage = 'The parameter file you selected is incompatible with the current model function.'
-            if not all([p['name'] == pc['name'] for p, pc in zip(params, currentparams)]):
-                raise ValueError(errormessage)
-            errormessage = 'Error while updating parameters'
-            self.parametersModel.parameters = params
+            self.setParameters(params)
+            self._parameterstack.push(params)
         except Exception as exc:
-            QtWidgets.QMessageBox.critical(self, 'Error while loading file', errormessage)
+            QtWidgets.QMessageBox.critical(self, 'Error while loading file', exc.args[0])
 
     def exportResults(self):
         results = {}
@@ -166,6 +190,19 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.parametersModel.update_limits(initpars[1], initpars[2])
         self.treeView.setModel(self.parametersModel)
         self.treeView.setItemDelegate(SpinBoxDelegate())
+        self._parameterstack.addModel(FitFunctionClass.name)
+        self._parameterstack.setModel(FitFunctionClass.name)
+        self._parameterstack.push(self.parametersModel.parameters)
+        self.updateHistorySlider()
+
+    def updateHistorySlider(self):
+        self._updating=True
+        try:
+            self.historySlider.setMinimum(0)
+            self.historySlider.setMaximum(len(self._parameterstack)-1)
+            self.historySlider.setValue(self._parameterstack.pointer())
+        finally:
+            self._updating=False
 
     def fitFunctionClass(self):
         return self.fitfunctionsModel.data(
@@ -288,67 +325,67 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
 
     @property
     def roiX(self):
-        return self.dataset[:, 0][self.dataMask]
+        return self.dataset[::self.decimationSpinBox.value()+1, 0][self.dataMask]
 
     @property
     def roiY(self):
-        return self.dataset[:, 1][self.dataMask]
+        return self.dataset[::self.decimationSpinBox.value()+1, 1][self.dataMask]
 
     @property
     def roiDY(self):
         try:
-            return self.dataset[:, 2][self.dataMask]
+            return self.dataset[::self.decimationSpinBox.value()+1, 2][self.dataMask]
         except (IndexError, TypeError):
             return None
 
     @property
     def roiDX(self):
         try:
-            return self.dataset[:, 3][self.dataMask]
+            return self.dataset[::self.decimationSpinBox.value()+1, 3][self.dataMask]
         except (IndexError, TypeError):
             return None
 
     @property
     def maskedX(self):
-        return self.dataset[:, 0][~self.dataMask]
+        return self.dataset[::self.decimationSpinBox.value()+1, 0][~self.dataMask]
 
     @property
     def maskedY(self):
-        return self.dataset[:, 1][~self.dataMask]
+        return self.dataset[::self.decimationSpinBox.value()+1, 1][~self.dataMask]
 
     @property
     def maskedDY(self):
         try:
-            return self.dataset[:, 2][~self.dataMask]
+            return self.dataset[::self.decimationSpinBox.value()+1, 2][~self.dataMask]
         except (IndexError, TypeError):
             return None
 
     @property
     def maskedDX(self):
         try:
-            return self.dataset[:, 3][~self.dataMask]
+            return self.dataset[::self.decimationSpinBox.value()+1, 3][~self.dataMask]
         except (IndexError, TypeError):
             return None
 
     @property
     def dataX(self):
-        return self.dataset[:, 0]
+        return self.dataset[::self.decimationSpinBox.value()+1, 0]
 
     @property
     def dataY(self):
-        return self.dataset[:, 1]
+        return self.dataset[::self.decimationSpinBox.value()+1, 1]
 
     @property
     def dataDY(self):
         try:
-            return self.dataset[:, 2]
+            return self.dataset[::self.decimationSpinBox.value()+1, 2]
         except (IndexError, TypeError):
             return None
 
     @property
     def dataDX(self):
         try:
-            return self.dataset[:, 3]
+            return self.dataset[::self.decimationSpinBox.value()+1, 3]
         except (IndexError, TypeError):
             return None
 
@@ -357,9 +394,20 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         return np.logical_and(self.dataX >= self.minimumXDoubleSpinBox.value(),
                               self.dataX <= self.maximumXDoubleSpinBox.value())
 
+    def workerfunc(self, fitfunc, *args, **kwargs):
+        try:
+            fitfunc(*args, **kwargs)
+        except Exception as exc:
+            print('Exception in workerfunc')
+            print(traceback.format_exc())
+            exc.tb=sys.exc_traceback()
+            raise exc
+
     def doFitting(self):
         logger.info('Starting fit of dataset.')
         params = self.parametersModel.parameters
+        self._parameterstack.push(params)
+        self.updateHistorySlider()
         val = [[FixedParameter(p['value']), float(p['value'])][p['enabled']] for p in params if p['fittable']]
         unf = [float(p['value']) for p in params if not p['fittable']]
         if all([isinstance(x, FixedParameter) for x in val]):
@@ -385,6 +433,9 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             exc = self._fit_future.exception()
             if exc is not None:
                 logger.error('Error while fitting: {}'.format(exc))
+                assert isinstance(exc, Exception)
+                logger.error(exc.__traceback__)
+                logger.error(exc.tb)
                 return
             fitresults = self._fit_future.result()
             fitpars = fitresults[:-2]
@@ -457,6 +508,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self.correlationTableView.setModel(ParameterCorrelationModel(stats['Correlation_coeffs'],
                                                                          [arg[0] for arg in func.arguments]))
             self.parametersModel.update_active_mask(stats['active_mask'])
+            self._parameterstack.push(self.parametersModel.parameters)
+            self.updateHistorySlider()
             self.rePlotModel()
             self.laststats = stats
         finally:

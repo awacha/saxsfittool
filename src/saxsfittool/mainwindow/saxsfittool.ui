@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>845</width>
+    <width>880</width>
     <height>810</height>
    </rect>
   </property>
@@ -44,21 +44,14 @@
            <string>Input data</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="0" colspan="2">
-            <widget class="QLabel" name="label_2">
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_5">
              <property name="text">
-              <string>Minimum x:</string>
+              <string>Plot mode:</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>File:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
+           <item row="3" column="2">
             <widget class="QDoubleSpinBox" name="maximumXDoubleSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -71,14 +64,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Maximum x:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
+           <item row="2" column="2">
             <widget class="QDoubleSpinBox" name="minimumXDoubleSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -94,29 +80,55 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Plot mode:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2" colspan="2">
-            <widget class="QComboBox" name="plotModeComboBox"/>
-           </item>
-           <item row="1" column="3" rowspan="2">
-            <widget class="QPushButton" name="setLimitsFromZoomPushButton">
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="fileNameLineEdit">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>1</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text">
-              <string>Set from
-zoom</string>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="placeholderText">
+              <string>No file has been loaded yet</string>
              </property>
             </widget>
+           </item>
+           <item row="4" column="2" colspan="3">
+            <widget class="QComboBox" name="plotModeComboBox"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Skip points:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Minimum x:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Maximum x:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>File:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2" colspan="3">
+            <widget class="QSpinBox" name="decimationSpinBox"/>
            </item>
            <item row="0" column="3">
             <widget class="QPushButton" name="openButton">
@@ -135,19 +147,17 @@ zoom</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QLineEdit" name="fileNameLineEdit">
+           <item row="2" column="3" rowspan="2">
+            <widget class="QPushButton" name="setLimitsFromZoomPushButton">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>1</horstretch>
+              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="placeholderText">
-              <string>No file has been loaded yet</string>
+             <property name="text">
+              <string>Set from
+zoom</string>
              </property>
             </widget>
            </item>
@@ -234,7 +244,8 @@ zoom</string>
                 <string>Execute</string>
                </property>
                <property name="icon">
-                <iconset theme="system-run"/>
+                <iconset theme="system-run">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
               </widget>
              </item>
@@ -244,7 +255,8 @@ zoom</string>
                 <string>Replot</string>
                </property>
                <property name="icon">
-                <iconset theme="view-refresh"/>
+                <iconset theme="view-refresh">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
               </widget>
              </item>
@@ -292,6 +304,53 @@ zoom</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>History:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="historySlider">
+               <property name="maximum">
+                <number>0</number>
+               </property>
+               <property name="pageStep">
+                <number>1</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="invertedAppearance">
+                <bool>false</bool>
+               </property>
+               <property name="invertedControls">
+                <bool>false</bool>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+               <property name="tickInterval">
+                <number>1</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="clearHistoryPushButton">
+               <property name="text">
+                <string>Clear</string>
+               </property>
+               <property name="icon">
+                <iconset theme="edit-clear">
+                 <normaloff>.</normaloff>.</iconset>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
             <widget class="QTreeView" name="treeView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
@@ -336,7 +395,8 @@ zoom</string>
              <string>Export parameters and results...</string>
             </property>
             <property name="icon">
-             <iconset theme="document-save-as"/>
+             <iconset theme="document-save-as">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -346,7 +406,8 @@ zoom</string>
              <string>Load parameters...</string>
             </property>
             <property name="icon">
-             <iconset theme="document-open"/>
+             <iconset theme="document-open">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -462,6 +523,26 @@ zoom</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>fileNameLineEdit</tabstop>
+  <tabstop>minimumXDoubleSpinBox</tabstop>
+  <tabstop>maximumXDoubleSpinBox</tabstop>
+  <tabstop>plotModeComboBox</tabstop>
+  <tabstop>fitFunctionComboBox</tabstop>
+  <tabstop>algorithmComboBox</tabstop>
+  <tabstop>lossFunctionComboBox</tabstop>
+  <tabstop>yTransformComboBox</tabstop>
+  <tabstop>weightingCheckBox</tabstop>
+  <tabstop>executePushButton</tabstop>
+  <tabstop>rePlotPushButton</tabstop>
+  <tabstop>plotModelPushButton</tabstop>
+  <tabstop>treeView</tabstop>
+  <tabstop>exportResultsPushButton</tabstop>
+  <tabstop>loadParametersPushButton</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>correlationTableView</tabstop>
+  <tabstop>statisticsTreeView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

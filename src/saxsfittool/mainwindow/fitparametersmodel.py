@@ -6,7 +6,7 @@ class FitParametersModel(QtCore.QAbstractItemModel):
     """A model storing fit parameters.
 
     Columns:
-    (X) name | (X) lower bound | (X) upper bound | value | uncertainty
+    (X) name | (X) lower bound | (X) upper bound | value | uncertainty | uncertainty percent
 
     (X) : has a tick/checker.
 
@@ -47,7 +47,7 @@ class FitParametersModel(QtCore.QAbstractItemModel):
         super().__init__()
 
     def index(self, row, column, parent=None, *args, **kwargs):
-        if column not in [0, 1, 2, 3, 4]:
+        if column not in [0, 1, 2, 3, 4, 5]:
             raise ValueError('Invalid column: {}'.format(column))
         if row >= len(self._parameters):
             raise ValueError('Invalid row: {}'.format(row))
@@ -60,7 +60,7 @@ class FitParametersModel(QtCore.QAbstractItemModel):
         return len(self._parameters)
 
     def columnCount(self, parent=None, *args, **kwargs):
-        return 5
+        return 6
 
     def headerData(self, column, orientation, role=None):
         if orientation == QtCore.Qt.Vertical:
@@ -68,12 +68,14 @@ class FitParametersModel(QtCore.QAbstractItemModel):
         if role is None:
             role = QtCore.Qt.DisplayRole
         if role == QtCore.Qt.DisplayRole:
-            return ['Name', 'Min.', 'Max.', 'Value', 'Uncertainty'][column]
+            return ['Name', 'Min.', 'Max.', 'Value', 'Uncertainty', 'Rel. unc. (%)'][column]
 
     def flags(self, modelindex):
         column = modelindex.column()
         row = modelindex.row()
         flagstoset = QtCore.Qt.ItemNeverHasChildren
+        if 'fittable' not in self._parameters[row]:
+            self._parameters[row]['fittable']=True
         if column == 0:
             # The name column is user-checkable.
             if self._parameters[row]['fittable']:
@@ -93,9 +95,10 @@ class FitParametersModel(QtCore.QAbstractItemModel):
         elif column == 3:
             # the value is always enabled and editable
             flagstoset |= QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable
-        elif column == 4:
+        elif column in [4,5]:
             if self._parameters[row]['enabled']:
                 flagstoset |= QtCore.Qt.ItemIsEnabled
+
         return flagstoset
 
     def data(self, modelindex, role=None):
@@ -151,6 +154,15 @@ class FitParametersModel(QtCore.QAbstractItemModel):
                     return str(self._parameters[row]['uncertainty'])
                 else:
                     return '(fixed)'
+        elif column == 5:
+            if role == QtCore.Qt.DisplayRole:
+                if self._parameters[row]['enabled']:
+                    if np.abs(self._parameters[row]['value'])<=np.finfo(self._parameters[row]['value']).eps:
+                        return 'infinite'
+                    else:
+                        return '{:.2f} %'.format(np.abs(self._parameters[row]['uncertainty']/self._parameters[row]['value'])*100)
+                else:
+                    return '(fixed)'
         if role == QtCore.Qt.ToolTipRole:
             return self._parameters[row]['description']
         return None
@@ -160,6 +172,8 @@ class FitParametersModel(QtCore.QAbstractItemModel):
         column = modelindex.column()
         if role is None:
             role = QtCore.Qt.EditRole
+        if 'fittable' not in self._parameters[row]:
+            self._parameters[row]['fittable']=True
         if role == QtCore.Qt.CheckStateRole:
             if column == 0 and self._parameters[row]['fittable']:
                 self._parameters[row]['enabled'] = data == QtCore.Qt.Checked
@@ -199,6 +213,9 @@ class FitParametersModel(QtCore.QAbstractItemModel):
         self.endRemoveRows()
         self.beginInsertRows(QtCore.QModelIndex(), 0, len(newparams))
         self._parameters = newparams
+        for p in self._parameters:
+            if 'fittable' not in p:
+                p['fittable'] = True
         self.endInsertRows()
 
     def update_parameters(self, values, uncertainties):
@@ -208,6 +225,9 @@ class FitParametersModel(QtCore.QAbstractItemModel):
             self._parameters[i]['value'] = values[i]
             self._parameters[i]['uncertainty'] = uncertainties[i]
         self.dataChanged.emit(self.createIndex(0, 0), self.createIndex(self.rowCount(), self.columnCount()))
+
+    def emitParametersChanged(self):
+        self.dataChanged.emit(self.createIndex(0,0), self.createIndex(self.rowCount(), self.columnCount()))
 
     def update_limits(self, lower=None, upper=None):
         fittablepars=[p for p in self._parameters if p['fittable']]
