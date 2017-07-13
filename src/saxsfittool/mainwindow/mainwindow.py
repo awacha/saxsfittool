@@ -433,9 +433,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             exc = self._fit_future.exception()
             if exc is not None:
                 logger.error('Error while fitting: {}'.format(exc))
+                print(exc.__traceback__)
                 assert isinstance(exc, Exception)
                 logger.error(exc.__traceback__)
-                logger.error(exc.tb)
+                #logger.error(exc.tb)
                 return
             fitresults = self._fit_future.result()
             fitpars = fitresults[:-2]
